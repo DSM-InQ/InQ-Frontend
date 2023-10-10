@@ -1,19 +1,21 @@
 'use client';
 import React from 'react';
-import { useForm } from '../../../hooks/useForm';
-import { color } from '../../../styles/theme';
+import { useForm } from '@/hooks/useForm';
+import { color } from '@/styles/theme';
 import styled from 'styled-components';
 import { Input } from '../common/input';
 import Button from '../common/button';
+import { Stack } from '../common/stack';
 
 export default function SignUp() {
     const { form: signForm, handleChange: signFormChange } = useForm({
         id: '',
+        userName: '',
         password: '',
         job: '',
         career: 0,
     });
-    const { id, password, job, career } = signForm;
+    const { id, userName, password, job, career } = signForm;
 
     return (
         <Container>
@@ -21,7 +23,7 @@ export default function SignUp() {
                 <Header>
                     <Title>회원가입</Title>
                     <Description>
-                        <Highlight>In</Highlight>terview<div style={{ margin: '0 5px 0 5px' }}>+</div>
+                        <Highlight>In</Highlight>terview<Stack margin={[0, 5, 0, 5]}>+</Stack>
                         <Highlight>Q</Highlight>uestion
                     </Description>
                 </Header>
@@ -29,20 +31,20 @@ export default function SignUp() {
                 <InputWrapper>
                     <Input label="아이디" name="id" value={id} onChange={signFormChange} />
 
-                    <div style={{ width: '100%' }}>
+                    <Input label="이름" name="userName" value={userName} onChange={signFormChange} />
+
+                    <Stack direction="column" width={100}>
                         <Input label="비밀번호" name="password" value={password} onChange={signFormChange} />
 
                         <Input label="비밀번호 확인" name="password" value={password} onChange={signFormChange} />
-                    </div>
+                    </Stack>
 
                     <Input label="직업" name="job" value={job} onChange={signFormChange} />
 
                     <Input label="경력" name="career" value={career} onChange={signFormChange} />
                 </InputWrapper>
 
-                <Button onClick={() => {}} margin={[0, 0, 0, 0]}>
-                    가입하기
-                </Button>
+                <Button onClick={() => {}}>가입하기</Button>
             </Wrapper>
         </Container>
     );
