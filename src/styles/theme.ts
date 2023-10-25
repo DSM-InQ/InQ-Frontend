@@ -4,7 +4,7 @@ export const color = {
     primaryLighten2: "#f5f9ff",
     primaryDefault: "#857aff",
     primaryDarken1: "#1070ff",
-    primaryDarken2: "#005de8",
+    primaryDarken2: "#3F3CD9",
     gray1: "#ffffff",
     gray2: "#f9f9f9",
     gray3: "#eeeeee",

@@ -2,7 +2,7 @@ import "@/styles/globals.css";
 import { Noto_Sans_KR } from "next/font/google";
 import React from "react";
 import { Metadata } from "next";
-import Provider from "@/components/Provider";
+import Provider from "@/components/provider";
 
 const notoSans = Noto_Sans_KR({
     weight: ["400", "500", "700"],

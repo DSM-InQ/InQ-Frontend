@@ -8,7 +8,16 @@ interface PropsType {
 }
 
 export default function Provider({ children }: PropsType) {
-    const queryClient = new QueryClient();
+    const queryClient = new QueryClient({
+        defaultOptions: {
+            queries: {
+                keepPreviousData: true,
+                refetchOnWindowFocus: true,
+                refetchOnMount: true,
+                staleTime: 5000,
+            },
+        },
+    });
     return (
         <QueryClientProvider client={queryClient}>
             {children}
