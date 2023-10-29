@@ -13,6 +13,7 @@ import {
     useGetQuestionList,
     useGetQuestionRank,
     useGetQuestionSetList,
+    useGetQuestionSetRank,
 } from "@/apis/question";
 import { questionResponse, questionSetResponse } from "@/apis/question/type";
 import { useCategoryState, useTagState } from "@/store/questionState";
@@ -40,12 +41,11 @@ export default function QuestionFinder() {
     const { form, handleChange } = useInput("");
 
     /** 질문 랭킹 목록 */
-    const { refetch: questionRankingRefetch } = useGetQuestionRank(
-        page,
-        category
-    );
+    const { refetch: questionRankingRefetch } = useGetQuestionRank(page);
+    /** 질문 랭킹 목록 */
+    const { refetch: questionSetRankingRefetch } = useGetQuestionSetRank(page);
     /** 질문 목록 */
-    const { data,refetch: questionListRefetch } = useGetQuestionList(
+    const { refetch: questionListRefetch } = useGetQuestionList(
         page,
         category,
         tag,
@@ -112,10 +112,10 @@ export default function QuestionFinder() {
             }
         } else {
             if (category === "랭킹") {
-                const newQuestionRanking = await questionRankingRefetch();
+                const newQuestionSetRanking = await questionSetRankingRefetch();
                 isAdd
-                    ? addQuestion(newQuestionRanking.data!)
-                    : refetchQuestion(newQuestionRanking.data!);
+                    ? addQuestion(newQuestionSetRanking.data!)
+                    : refetchQuestion(newQuestionSetRanking.data!);
             } else {
                 const newQuestionSetList = await questionSetListRefetch();
                 isAdd
@@ -177,9 +177,7 @@ export default function QuestionFinder() {
                             ).getTime()
                     )
                     .map((item, i) => {
-                        return (
-                            <QuestionBox key={i} data={item} />
-                        );
+                        return <QuestionBox key={i} data={item} />;
                     })}
                 {question.has_next && (
                     <AddQuestion
