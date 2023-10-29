@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import styled from "styled-components";
 import thumbsUp from "public/assets/svg/thumbsUp.svg";
@@ -7,34 +8,63 @@ import Image from "next/image";
 import { color } from "@/styles/theme";
 import { Stack } from "../common/stack";
 import { questionListType } from "@/apis/question/type";
+import { getValueByKey } from "@/utils/useGetPropertyKey";
+import { categoryType } from "@/utils/Translation";
+import { useRouter } from "next/navigation";
 
 interface propsType {
     data: questionListType;
 }
 
+/**
+ * @param data 질문 / 질문세트 객체
+ * @returns 질문 박스 components
+ */
 export const QuestionBox = ({ data }: propsType) => {
+    const router = useRouter();
     return (
-        <Container>
+        <Container
+            onClick={() => {
+                !!data.question_set_name &&
+                    router.push(String(data.question_set_id));
+            }}
+        >
             <Stack justify="space-between" align="center">
-                <CategoryText>{`질문: ${data.category}`}</CategoryText>
+                <CategoryText>{`질문 : ${getValueByKey(
+                    categoryType,
+                    data.category
+                )}`}</CategoryText>
                 <Stack gap={6}>
-                    <DateText>{data.created_at}</DateText>
-                    <Image src={thumbsUp} alt="" />
-                    <NumText>{data.like_count}</NumText>
-                    <Image src={user} alt="" />
-                    <NumText>{data.answer_count}</NumText>
+                    <DateText>
+                        {data.created_at.slice(0, 10)}{" "}
+                        {data.created_at.slice(11, 16)}
+                    </DateText>
+                    {data.like_count !== undefined && (
+                        <>
+                            <Image src={thumbsUp} alt="" />
+                            <NumText>{data.like_count}</NumText>
+                        </>
+                    )}
+                    {data.view_count !== undefined && (
+                        <>
+                            <Image src={user} alt="" />
+                            <NumText>{data.view_count}</NumText>
+                        </>
+                    )}
                 </Stack>
             </Stack>
             <Stack gap={8} align="center">
-                <TitleText>제목</TitleText>
+                <TitleText>
+                    {data.question ? data.question : data.question_set_name}
+                </TitleText>
                 {data.is_favorite && <Image src={star} alt="" />}
             </Stack>
             <Stack justify="space-between">
-                <UserText>{`${data.username} · 백엔드 1년차`}</UserText>
-                <Stack gap={4} margin={[0, -4, 0, 0]}>
-                    <Tag># 태그들</Tag>
-                    <Tag># 태그들</Tag>
-                    <Tag># 태그들</Tag>
+                <UserText>{`${data.username} · ${data.job} ${data.job_duration}년차`}</UserText>
+                <Stack gap={4} margin={"0 -4px 0 0"}>
+                    {data.tags.map((item, i) => (
+                        <Tag key={i}># {item}</Tag>
+                    ))}
                 </Stack>
             </Stack>
         </Container>

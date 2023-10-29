@@ -1,3 +1,4 @@
+/** color */
 export const color = {
     primary: "#3d8aff",
     primaryLighten1: "#b1d0ff",

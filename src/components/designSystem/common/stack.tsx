@@ -1,43 +1,45 @@
 import React, { ReactNode } from "react";
-import styled from "styled-components";
-
-type directionType = "row" | "column" | "row-reverse" | "column-reverse";
-type itemType =
-    | "start"
-    | "center"
-    | "end"
-    | "space-around"
-    | "space-between"
-    | "space-evenly";
-type positionType = "static" | "relative" | "absolute" | "fixed" | "sticky";
-type wrapType = "nowrap" | "wrap" | "wrap-reverse";
+import styled, { CSSProperties } from "styled-components";
 
 interface propsType {
     width?: string;
     height?: number;
-    direction?: directionType;
-    align?: itemType;
-    justify?: itemType;
+    direction?: CSSProperties["flexDirection"];
+    align?: CSSProperties["alignItems"];
+    justify?: CSSProperties["justifyContent"];
     gap?: number;
-    margin?: [number, number, number, number];
-    wrap?: wrapType;
+    margin?: CSSProperties["margin"];
+    wrap?: CSSProperties["flexWrap"];
     children?: ReactNode;
-    position?: positionType;
+    position?: CSSProperties["position"];
 }
 
 interface stylePropsType {
     width?: string;
     height?: number;
-    direction?: directionType;
-    $align?: itemType;
-    $justify?: itemType;
+    direction?: CSSProperties["flexDirection"];
+    $align?: CSSProperties["alignItems"];
+    $justify?: CSSProperties["justifyContent"];
     $gap?: number;
-    $margin?: [number, number, number, number];
-    wrap?: wrapType;
+    $margin?: CSSProperties["margin"];
+    wrap?: CSSProperties["flexWrap"];
     children?: ReactNode;
-    $position?: positionType;
+    $position?: CSSProperties["position"];
 }
 
+/**
+ * @param width string으로 넣으면 됨 ex) '100%'
+ * @param height string으로 넣으면 됨 ex) '100%'
+ * @param direction flex-direction 넣듯이 string으로 넣으면 됨
+ * @param align align-items 넣듯이 string으로 넣으면 됨
+ * @param justify justify-content 넣듯이 string으로 넣으면 됨
+ * @param gap 요소들간에 격차
+ * @param wrap flex-wrap 넣듯이 string으로 넣으면 됨
+ * @param margin 문자열로 넣으면 됨 ex) '10px' ex) '10px 10px'
+ * @param children ReactNode
+ * @param position position 넣듯이 string으로 넣으면 됨
+ * @returns stack components
+ */
 export const Stack = ({
     width,
     height,
@@ -77,5 +79,5 @@ const Container = styled.div<stylePropsType>`
     justify-content: ${({ $justify }) => $justify};
     flex-wrap: ${({ wrap }) => wrap};
     gap: ${({ $gap }) => $gap}px;
-    margin: ${({ $margin }) => $margin?.join("px ")}px;
+    margin: ${({ $margin }) => $margin};
 `;

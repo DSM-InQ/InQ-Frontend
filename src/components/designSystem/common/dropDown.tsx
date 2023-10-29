@@ -1,34 +1,45 @@
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
-import styled, { css } from "styled-components";
+import styled, { CSSProperties } from "styled-components";
 import chevron from "public/assets/svg/chevron.svg";
 import { color } from "@/styles/theme";
 
 interface DropDownProps<T> {
-    className?: string;
     value?: T;
-    margin?: [number, number, number, number];
+    margin?: CSSProperties["margin"];
     width?: string;
     onChange: (value: T) => void;
     option: T[];
 }
 
+/**
+ * @param margin 문자열로 넣으면 됨 ex) '10px' ex) '10px 10px'
+ * @param option 선택지 배열로 넣으면 됨
+ * @param value input에 value 넣듯이 넣으면 됨
+ * @param onChange 선택지 클릭시 해당 선택지를 string으로 return 해줌
+ * @param width string으로 넣으면 됨 ex) '100%'
+ * @returns 드롭다운 components
+ */
 export const DropDown = <T extends string>({
-    className,
-    margin = [0, 0, 0, 0],
+    margin = 0,
     option,
     value,
     onChange,
     width = "100%",
 }: DropDownProps<T>) => {
+    /** 드롭다운을 열고 닫기 위한 state */
     const [isopen, setIsopen] = useState<boolean>(false);
+    /** 드롭다운의 값을 관리하기 위한 state */
     const [data, setData] = useState<T>(value ? value : option[0]);
+    /** 바탕을 누르면 드롭다운을 닫기 위한 ref */
     const outsideRef = useRef<HTMLDivElement>(null);
 
+    /** 기본값 변경을 위한 useEffect */
     useEffect(() => {
         setData(value ? value : option[0]);
     }, [value, option]);
 
+    /** 바탕을 누르면 꺼지는 기능을 구현하기 위한 useEffect */
     useEffect(() => {
         function handleClickOutside(event: any) {
             // 현재 document에서 mousedown 이벤트가 동작하면 호출되는 함수입니다.
@@ -49,7 +60,6 @@ export const DropDown = <T extends string>({
     return (
         <_DropdownWrapper width={width} ref={outsideRef}>
             <_Selector
-                className={className}
                 onClick={() => {
                     setIsopen(!isopen);
                 }}
@@ -109,7 +119,7 @@ const _DropdownWrapper = styled.div<{ width?: string }>`
 `;
 
 const _Selector = styled.div<{
-    $margin: [number, number, number, number];
+    $margin: CSSProperties["margin"];
     width: string;
 }>`
     position: relative;
@@ -124,7 +134,7 @@ const _Selector = styled.div<{
     font-size: 16px;
     font-weight: 400;
     cursor: pointer;
-    margin: ${({ $margin }) => $margin.join("px ")}px;
+    margin: ${({ $margin }) => $margin};
 `;
 
 const _Items = styled.div<{ width: string; $isopen?: boolean }>`
@@ -145,7 +155,7 @@ const _Items = styled.div<{ width: string; $isopen?: boolean }>`
             max-height: 160px;
         }
     }
-    animation: dropdown 0.4s ease;
+    animation: dropdown 0.5s ease;
 `;
 
 const _Item = styled.div<{ width: string }>`
@@ -168,7 +178,7 @@ const _Img = styled.div<{ $isopen?: boolean }>`
     display: flex;
     align-items: center;
     rotate: ${({ $isopen }) => ($isopen ? "180deg" : "0deg")};
-    transition-duration: 0.2s;
+    transition-duration: 0.5s;
 `;
 
 const Devider = styled.div`

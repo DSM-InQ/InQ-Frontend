@@ -1,22 +1,35 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-interface ITechState {
-    techList: ICode[];
-    appendTechList: (tech: ICode) => void;
-    deleteTechList: (id: number) => void;
-    resetTechList: () => void;
+interface CategoryState {
+    category: string;
+    selectCategory: (categoryName: string) => void;
+}
+/** 선택한 카테코리 state */
+export const useCategoryState = create<CategoryState>()(
+    devtools((set) => ({
+        category: "랭킹",
+        selectCategory: (categoryName: string) =>
+            set({ category: categoryName }),
+    }))
+);
+
+interface TagState {
+    tag: string[];
+    selectTag: (tagName: string) => void;
+    resetTag: () => void;
 }
 
-export const useTechState = create<ITechState>()(
+/** 선택한 태그 state */
+export const useTagState = create<TagState>()(
     devtools((set) => ({
-        techList: [],
-        appendTechList: (tech: ICode) =>
-            set((state) => ({ techList: [...state.techList, tech] })),
-        deleteTechList: (id: number) =>
-            set((state) => ({
-                techList: state.techList.filter((tech) => tech.code !== id),
-            })),
-        resetTechList: () => set(() => ({ techList: [] })),
+        tag: [],
+        selectTag: (tagName: string) =>
+            set((prev) =>
+                prev.tag.includes(tagName)
+                    ? { tag: prev.tag.filter((element) => element !== tagName) }
+                    : { tag: [...prev.tag, tagName] }
+            ),
+        resetTag: () => set({ tag: [] }),
     }))
 );

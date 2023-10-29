@@ -1,62 +1,62 @@
 import { useGetTag } from "@/apis/question";
+import { useCategoryState, useTagState } from "@/store/questionState";
 import { color } from "@/styles/theme";
 import { categoryType } from "@/utils/Translation";
-import React, { useState } from "react";
-import styled from "styled-components";
+import React from "react";
+import styled, { css } from "styled-components";
 import { Stack } from "../common/stack";
 
+/** @returns 카테고리 및 태그 선택 components */
 export const Category = () => {
-    const [selectCategory, setSelectCategory] = useState<string>("랭킹");
-    const [selectTag, setSelectTag] = useState<string[]>(["개발"]);
-    const category = ["개발", "마케팅", "기획", "상식", "학습", "경력", "인성"];
-    const categoryTag = [
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
+    /** 선택한 카테고리 state */
+    const { category, selectCategory } = useCategoryState();
+    /** 선택한 태그 state */
+    const { tag, selectTag, resetTag } = useTagState();
+    /** 카테고리 종류 */
+    const categoryArray = [
+        "개발",
+        "마케팅",
+        "기획",
+        "상식",
+        "학습",
+        "경력",
+        "인성",
     ];
-    const { data } = useGetTag(categoryType[selectCategory]);
 
+    /** 선택한 카테고리에 대한 태그 */
+    const { data, isFetching } = useGetTag(categoryType[category]);
     return (
         <CategoryContainer>
             <CategoryBtn
-                $isSelect={selectCategory === "랭킹"}
+                $isSelect={category === "랭킹"}
                 onClick={() => {
-                    setSelectCategory("랭킹");
+                    selectCategory("랭킹");
                 }}
             >
                 랭킹
             </CategoryBtn>
-            {category.map((categoryName, i) => (
+            {categoryArray.map((categoryName, i) => (
                 <Stack key={i} direction="column" gap={20}>
                     <CategoryBtn
-                        $isSelect={selectCategory === categoryName}
+                        $isSelect={category === categoryType[categoryName]}
                         onClick={() => {
-                            setSelectCategory(categoryName);
+                            selectCategory(categoryType[categoryName]);
+                            resetTag();
                         }}
                     >
                         {categoryName}
                     </CategoryBtn>
-                    {selectCategory === categoryName &&
-                        !!data?.tag_list.length && (
+                    {category === categoryName &&
+                        !!data?.tag_list.length &&
+                        !isFetching && (
                             <TagWrapper>
-                                {data?.tag_list.map((tag, i) => (
+                                {data?.tag_list.map((tagName, i) => (
                                     <TagBtn
                                         key={i}
-                                        $isSelect={selectTag.includes(tag)}
+                                        $isSelect={tag.includes(tagName)}
+                                        onClick={() => selectTag(tagName)}
                                     >
-                                        # {tag}
+                                        # {tagName}
                                     </TagBtn>
                                 ))}
                             </TagWrapper>
@@ -78,7 +78,7 @@ const CategoryBtn = styled.button<{ $isSelect: boolean }>`
     width: 230px;
     height: 60px;
     border: ${({ $isSelect }) =>
-        $isSelect ? "none" : `1px solid ${color.gray4}`};
+        $isSelect ? "none" : css`1px solid ${color.gray4}`};
     border-radius: 50px;
     background-color: ${({ $isSelect }) =>
         $isSelect ? `${color.primaryDefault}` : `${color.gray1}`};
@@ -103,15 +103,6 @@ const TagWrapper = styled.div`
     gap: 8px;
     margin-left: 15px;
     overflow: hidden;
-    @keyframes slideInDown {
-        0% {
-            max-height: 0px;
-        }
-        100% {
-            max-height: 1000px;
-        }
-    }
-    animation: slideInDown 2s ease-out forwards;
 `;
 
 const TagBtn = styled.button<{ $isSelect: boolean }>`

@@ -8,7 +8,12 @@ import { instance } from "@/apis/axios";
 
 const path = "/user";
 
-/** 로그인 */
+/**
+ *로그인
+ * @param loginData 아이디 및 비밀번호
+ * @param checkBoxValue 아이디 저장 여부
+ * @returns login api 호출 성공/실패 여부
+ */
 export const Login = (loginData: loginDataType, checkBoxValue: boolean) => {
     const router = useRouter();
     return useMutation(async () => instance.post(`${path}/auth`, loginData), {

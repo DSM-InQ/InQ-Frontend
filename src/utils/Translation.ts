@@ -1,3 +1,4 @@
+/** 카테고리 type */
 export const categoryType: { [key: string]: string } = {
     개발: "DEVELOPMENT",
     마케팅: "MARKETING",

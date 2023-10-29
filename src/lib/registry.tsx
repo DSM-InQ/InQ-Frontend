@@ -3,13 +3,12 @@ import React, { useState } from "react";
 import { useServerInsertedHTML } from "next/navigation";
 import { ServerStyleSheet, StyleSheetManager } from "styled-components";
 
+/** 페이지 이동할 때 styled-components가 잠깐 적용이 풀리는 버고를 없애기 위한 설정 */
 export default function StyledComponentsRegistry({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    // Only create stylesheet once with lazy initial state
-    // x-ref: https://reactjs.org/docs/hooks-reference.html#lazy-initial-state
     const [styledComponentsStyleSheet] = useState(() => new ServerStyleSheet());
 
     useServerInsertedHTML(() => {

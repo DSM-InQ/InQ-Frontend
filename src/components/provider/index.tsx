@@ -7,6 +7,7 @@ interface PropsType {
     children: React.ReactNode;
 }
 
+/** 쉽게 react의 index.tsx나 app.tsx라고 생각하면 됨 */
 export default function Provider({ children }: PropsType) {
     const queryClient = new QueryClient({
         defaultOptions: {

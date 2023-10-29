@@ -10,17 +10,22 @@ import { CheckBox, Input } from "@/components/designSystem/common/input";
 import Button from "@/components/designSystem/common/button";
 import { Stack } from "@/components/designSystem/common/stack";
 
+/** @returns 로그인 page */
 export default function LoginCompo() {
+    /** 체크박스 선택 구분을 위한 state */
     const [checkBox, setCheckBox] = useState(false);
+    /** 비밀번호 input type 구분을 위한 state */
     const [isPassword, setIsPassword] = useState(true);
+    /** 로그인 data */
     const { form: signForm, handleChange: signFormChange } = useForm({
         account_id: "",
         password: "",
     });
+    /** 로그인 data를 구조분해할당 해놓은 부분 */
     const { account_id, password } = signForm;
 
+    /** 로그인 api 호출 */
     const { mutate } = Login(signForm, checkBox);
-
     return (
         <Container>
             <Wrapper>
@@ -38,7 +43,7 @@ export default function LoginCompo() {
                     value={password}
                     type={isPassword ? "password" : "text"}
                     onChange={signFormChange}
-                    margin={[24, 0, 78, 0]}
+                    margin="24px 0 78px 0"
                     icon={isPassword ? closeEye : openEye}
                     iconClick={() => setIsPassword((password) => !password)}
                 />
@@ -52,7 +57,7 @@ export default function LoginCompo() {
                         mutate();
                     }}
                     disabled={!account_id && !password}
-                    margin={[38, 0, 65, 0]}
+                    margin="38px 0 65px 0"
                 >
                     로그인
                 </Button>
