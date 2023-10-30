@@ -1,18 +1,18 @@
-'use client';
-import React from 'react';
-import { useForm } from '@/hooks/useForm';
-import { color } from '@/styles/theme';
-import styled from 'styled-components';
-import { Input } from '../common/input';
-import Button from '../common/button';
-import { Stack } from '../common/stack';
+"use client";
+import React from "react";
+import { useForm } from "@/hooks/useForm";
+import { color } from "@/styles/theme";
+import styled from "styled-components";
+import { Input } from "@/components/designSystem/common/input";
+import { Stack } from "@/components/designSystem/common/stack";
+import Button from "@/components/designSystem/common/button";
 
 export default function SignUp() {
     const { form: signForm, handleChange: signFormChange } = useForm({
-        id: '',
-        userName: '',
-        password: '',
-        job: '',
+        id: "",
+        userName: "",
+        password: "",
+        job: "",
         career: 0,
     });
     const { id, userName, password, job, career } = signForm;
@@ -23,25 +23,56 @@ export default function SignUp() {
                 <Header>
                     <Title>회원가입</Title>
                     <Description>
-                        <Highlight>In</Highlight>terview<Stack margin={[0, 5, 0, 5]}>+</Stack>
+                        <Highlight>In</Highlight>terview
+                        <Stack margin="0 5px 0 5px">+</Stack>
                         <Highlight>Q</Highlight>uestion
                     </Description>
                 </Header>
 
                 <InputWrapper>
-                    <Input label="아이디" name="id" value={id} onChange={signFormChange} />
+                    <Input
+                        label="아이디"
+                        name="id"
+                        value={id}
+                        onChange={signFormChange}
+                    />
 
-                    <Input label="이름" name="userName" value={userName} onChange={signFormChange} />
+                    <Input
+                        label="이름"
+                        name="userName"
+                        value={userName}
+                        onChange={signFormChange}
+                    />
 
-                    <Stack direction="column" width={100}>
-                        <Input label="비밀번호" name="password" value={password} onChange={signFormChange} />
+                    <Stack direction="column" width={"100px"}>
+                        <Input
+                            label="비밀번호"
+                            name="password"
+                            value={password}
+                            onChange={signFormChange}
+                        />
 
-                        <Input label="비밀번호 확인" name="password" value={password} onChange={signFormChange} />
+                        <Input
+                            label="비밀번호 확인"
+                            name="password"
+                            value={password}
+                            onChange={signFormChange}
+                        />
                     </Stack>
 
-                    <Input label="직업" name="job" value={job} onChange={signFormChange} />
+                    <Input
+                        label="직업"
+                        name="job"
+                        value={job}
+                        onChange={signFormChange}
+                    />
 
-                    <Input label="경력" name="career" value={career} onChange={signFormChange} />
+                    <Input
+                        label="경력"
+                        name="career"
+                        value={career}
+                        onChange={signFormChange}
+                    />
                 </InputWrapper>
 
                 <Button onClick={() => {}}>가입하기</Button>
