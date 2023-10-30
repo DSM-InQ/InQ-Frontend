@@ -201,7 +201,7 @@ const Container = styled.div`
     gap: 59px;
 `;
 
-const InputWrapper = styled.div`
+const InputWrapper = styled.label`
     position: relative;
 `;
 
