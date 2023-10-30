@@ -6,7 +6,7 @@ const path = "/question";
 
 /**
  * 카테고리의 태그들을 받는 api입니다.
- * @param category 카테고리 한글로
+ * @param category 카테고리 영어로
  * @returns 태그 조회 api 호출 성공/실패 여부
  */
 export const useGetTag = (category: string) => {
@@ -70,7 +70,7 @@ export const useGetQuestionSetRank = (page: number) => {
 /**
  * 질문 목록 조회 api입니다.
  * @param page 몇 번째 page 호출할건지
- * @param category 카테고리 한글로
+ * @param category 카테고리 영어로
  * @param tags 선택한 태그들
  * @param keyword 검색할 키워드
  * @returns 질문 목록 조회 api 호출 성공/실패 여부
@@ -100,7 +100,7 @@ export const useGetQuestionList = (
 /**
  * 질문세트 목록 조회 api입니다.
  * @param page 몇 번째 page 호출할건지
- * @param category 카테고리 한글로
+ * @param category 카테고리 영어로
  * @param tags 선택한 태그들
  * @param keyword 검색할 키워드
  * @returns 질문세트 목록 조회 api 호출 성공/실패 여부
