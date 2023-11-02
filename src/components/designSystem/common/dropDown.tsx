@@ -8,24 +8,27 @@ interface DropDownProps<T> {
     value?: T;
     margin?: CSSProperties["margin"];
     width?: string;
+    disabled?: boolean;
     onChange: (value: T) => void;
     option: T[];
 }
 
 /**
- * @param margin 문자열로 넣으면 됨 ex) '10px' ex) '10px 10px'
- * @param option 선택지 배열로 넣으면 됨
  * @param value input에 value 넣듯이 넣으면 됨
- * @param onChange 선택지 클릭시 해당 선택지를 string으로 return 해줌
+ * @param margin 문자열로 넣으면 됨 ex) '10px' ex) '10px 10px'
  * @param width string으로 넣으면 됨 ex) '100%'
+ * @param disabled 어떨 때 disabled인지
+ * @param onChange 선택지 클릭시 해당 선택지를 string으로 return 해줌
+ * @param option 선택지 배열로 넣으면 됨
  * @returns 드롭다운 components
  */
 export const DropDown = <T extends string>({
-    margin = 0,
-    option,
     value,
-    onChange,
+    margin = 0,
     width = "100%",
+    disabled = false,
+    onChange,
+    option,
 }: DropDownProps<T>) => {
     /** 드롭다운을 열고 닫기 위한 state */
     const [isopen, setIsopen] = useState<boolean>(false);
@@ -61,10 +64,10 @@ export const DropDown = <T extends string>({
         <_DropdownWrapper width={width} ref={outsideRef}>
             <_Selector
                 onClick={() => {
-                    setIsopen(!isopen);
+                    !disabled && setIsopen(!isopen);
                 }}
                 $margin={margin}
-                width={width}
+                disabled={disabled}
             >
                 {data}
                 <_Img $isopen={isopen}>
@@ -120,20 +123,21 @@ const _DropdownWrapper = styled.div<{ width?: string }>`
 
 const _Selector = styled.div<{
     $margin: CSSProperties["margin"];
-    width: string;
+    disabled: boolean;
 }>`
     position: relative;
     border-radius: 4px;
     border: 1px solid ${color.gray4};
-    background: ${color.gray1};
-    padding: 10px 10px 10px 15px;
+    background: ${({ disabled }) => (disabled ? color.gray3 : color.gray1)};
+    padding: 0px 10px 0px 15px;
     height: 45px;
     width: 100%;
     display: flex;
+    align-items: center;
     z-index: 99;
     font-size: 16px;
     font-weight: 400;
-    cursor: pointer;
+    cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
     margin: ${({ $margin }) => $margin};
 `;
 
@@ -163,6 +167,7 @@ const _Item = styled.div<{ width: string }>`
     align-items: center;
     width: ${({ width }) => width};
     height: 45px;
+    padding-bottom: 2px;
     padding-left: 15px;
     color: ${color.gray5};
     z-index: 1;

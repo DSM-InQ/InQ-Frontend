@@ -7,7 +7,7 @@ export const instance = axios.create({
     timeout: 10000,
 });
 
-/** 자동 토큰 작성을 위한 request interceptors */
+/** 자동 토큰 추가를 위한 request interceptors */
 instance.interceptors.request.use(
     (config) => {
         const accessToken = getCookie("access_token");
@@ -32,7 +32,6 @@ instance.interceptors.response.use(
                 !getCookie("access_token")
             ) {
                 deleteCookie("access_token");
-                deleteCookie("refresh_token");
                 window.location.href = "/login";
             }
         }

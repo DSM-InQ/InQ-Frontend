@@ -1,6 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
+import { MutationOptions, useMutation, useQuery } from "@tanstack/react-query";
 import { instance } from "../axios";
-import { questionResponse, questionSetResponse } from "./type";
+import { questionResponse, questionSetDetailResponse, questionSetResponse } from "./type";
 
 const path = "/question";
 
@@ -20,7 +20,7 @@ export const useGetTag = (category: string) => {
             return data;
         },
         {
-            enabled: category !== undefined,
+            enabled: category !== "랭킹",
         }
     );
 };
@@ -34,9 +34,8 @@ export const useGetQuestionRank = (page: number) => {
     return useQuery(
         ["getQuestionRank", page],
         async () => {
-            const queryString = page ? `?page=${page}` : "";
             const { data } = await instance.get<questionResponse>(
-                `${path}/rank${queryString}`
+                `${path}/rank?page=${page}`
             );
             return data;
         },
@@ -55,9 +54,8 @@ export const useGetQuestionSetRank = (page: number) => {
     return useQuery(
         ["getQuestionRank", page],
         async () => {
-            const queryString = page ? `?page=${page}` : "";
             const { data } = await instance.get<questionSetResponse>(
-                `${path}/set/rank${queryString}`
+                `${path}/set/rank?page=${page}`
             );
             return data;
         },
@@ -84,7 +82,7 @@ export const useGetQuestionList = (
     return useQuery(
         ["getQuestionList", page, category, tags, keyword],
         async () => {
-            const tagsQueryString = tags?.length ? `?&tags=${tags}` : "";
+            const tagsQueryString = tags?.length ? `&tags=${tags}` : "";
             const keywordQueryString = keyword ? `&keyword=${keyword}` : "";
             const { data } = await instance.get<questionResponse>(
                 `${path}?category=${category}&page=${page}${tagsQueryString}${keywordQueryString}`
@@ -112,7 +110,7 @@ export const useGetQuestionSetList = (
     keyword?: string
 ) => {
     return useQuery(
-        ["getQuestionList", page, category, tags, keyword],
+        ["getQuestionSetList", page, category, tags, keyword],
         async () => {
             const tagsQueryString = tags?.length ? `?&tags=${tags}` : "";
             const keywordQueryString = keyword ? `&keyword=${keyword}` : "";
@@ -123,6 +121,56 @@ export const useGetQuestionSetList = (
         },
         {
             enabled: false,
+        }
+    );
+};
+
+/**
+ * 질문세트 상세보기 조회 api입니다.
+ * @param id 조회할 질문세트 id
+ * @returns 질문세트 상세보기 조회 api 호출 성공/실패 여부
+ */
+export const useGetQuestionSetDetail = (id: string) => {
+    return useQuery(["getQuestionSetDetail", id], async () => {
+        const { data } = await instance.get<questionSetDetailResponse>(
+            `${path}/set/${id}`
+        );
+        return data;
+    });
+};
+
+/**
+ * 질문세트 즐겨찾기 요청 api입니다.
+ * @param questionSetId 어떤 질문세트인지 id로 넣으면 됨
+ * @param options onSuccess, onError등등 넣으면 됨
+ * @returns 성공시 "is_favorite" : true
+ */
+export const useQuestionSetFavorite = (
+    questionSetId: number,
+    options: MutationOptions
+) => {
+    return useMutation(
+        async () => instance.delete(`${path}/set/${questionSetId}/favorite`),
+        {
+            ...options,
+        }
+    );
+};
+
+/**
+ * 질문 즐겨찾기 요청 api입니다.
+ * @param questionSetId 어떤 질문인지 id로 넣으면 됨
+ * @param options onSuccess, onError등등 넣으면 됨
+ * @returns 성공시 "is_favorite" : true
+ */
+export const useQuestionFavorite = (
+    questionId: number,
+    options: MutationOptions
+) => {
+    return useMutation(
+        async () => instance.delete(`${path}/${questionId}/favorite`),
+        {
+            ...options,
         }
     );
 };
