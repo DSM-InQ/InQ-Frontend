@@ -1,23 +1,15 @@
-import React from "react";
+import React, { InputHTMLAttributes } from "react";
 import Image from "next/image";
 import styled, { css, CSSProperties } from "styled-components";
 import { color } from "@/styles/theme";
 
-type inputType = "text" | "password" | "number";
-
-interface inputPropsType {
+interface inputPropsType extends InputHTMLAttributes<HTMLInputElement> {
     width?: string;
-    placeholder?: string;
-    disabled?: boolean;
     icon?: string;
     iconClick?: () => void;
     label?: string;
-    type?: inputType;
     margin?: CSSProperties["margin"];
     isError?: boolean;
-    name: string;
-    value: string | number;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 interface checkBoxPropsType {

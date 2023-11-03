@@ -33,7 +33,7 @@ export interface questionSetDetailResponse {
     username: string;
     job: string;
     job_duration: string;
-    categories: {
+    category: {
         category: string;
         count: number;
     }[];
@@ -46,7 +46,7 @@ export interface questionSetDetailResponse {
     comments: {
         username: string;
         job: string;
-        jobDuration: number;
+        job_duration: number;
         comment: string;
     }[];
 }

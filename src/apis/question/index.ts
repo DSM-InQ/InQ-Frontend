@@ -1,6 +1,10 @@
 import { MutationOptions, useMutation, useQuery } from "@tanstack/react-query";
 import { instance } from "../axios";
-import { questionResponse, questionSetDetailResponse, questionSetResponse } from "./type";
+import {
+    questionResponse,
+    questionSetDetailResponse,
+    questionSetResponse,
+} from "./type";
 
 const path = "/question";
 
@@ -159,7 +163,7 @@ export const useQuestionSetFavorite = (
 
 /**
  * 질문 즐겨찾기 요청 api입니다.
- * @param questionSetId 어떤 질문인지 id로 넣으면 됨
+ * @param questionId 어떤 질문인지 id로 넣으면 됨
  * @param options onSuccess, onError등등 넣으면 됨
  * @returns 성공시 "is_favorite" : true
  */
@@ -174,3 +178,4 @@ export const useQuestionFavorite = (
         }
     );
 };
+

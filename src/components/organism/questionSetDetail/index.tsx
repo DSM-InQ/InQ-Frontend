@@ -5,9 +5,6 @@ import { color } from "@/styles/theme";
 import backImg from "public/assets/svg/backImg.svg";
 import thumbs from "public/assets/svg/thumbs.svg";
 import user from "public/assets/svg/user.svg";
-import develop from "public/assets/svg/develop.svg";
-import career from "public/assets/svg/career.svg";
-import tenacity from "public/assets/svg/tenacity.svg";
 import commentFormImg from "public/assets/svg/commentFormImg.svg";
 import up from "public/assets/svg/up.svg";
 import Image from "next/image";
@@ -15,6 +12,10 @@ import { Stack } from "@/components/designSystem/common/stack";
 import { Text } from "@/components/designSystem/common/text";
 import { useGetQuestionSetDetail } from "@/apis/question";
 import { useRouter } from "next/navigation";
+import { categoryImg, categoryType } from "@/utils/Translation";
+import { getValueByKey } from "@/utils/useGetPropertyKey";
+import { useQuestionSetWriteComment } from "@/apis/comment";
+import { useInput } from "@/hooks/useInput";
 
 interface propsType {
     id: string;
@@ -28,8 +29,20 @@ export default function QuestionSetDetail({ id }: propsType) {
     /** 라우팅을 위한 router 생성 */
     const router = useRouter();
 
+    /** 키워드 input의 state */
+    const { form, handleChange } = useInput("");
+
     /** 질문세트 상세보기 data */
-    const { data } = useGetQuestionSetDetail(id);
+    const { data, refetch } = useGetQuestionSetDetail(id);
+    const { mutate } = useQuestionSetWriteComment(id, form, {
+        onSuccess: () => {
+            alert("댓글이 성공적으로 작성되었습니다.");
+            refetch();
+        },
+        onError: () => {
+            alert("댓글 작성을 실패하였습니다.");
+        },
+    });
     return (
         <Container>
             <Stack width="1100px" direction="column">
@@ -82,24 +95,27 @@ export default function QuestionSetDetail({ id }: propsType) {
                 </Text>
                 <Stack justify="space-between" align="flex-end">
                     <Stack gap={50}>
-                        <Stack direction="column" gap={14} align="center">
-                            <QuestionTypeImg>
-                                <Image src={develop} alt="" />
-                            </QuestionTypeImg>
-                            <Text>개발 질문 15개</Text>
-                        </Stack>
-                        <Stack direction="column" gap={14} align="center">
-                            <QuestionTypeImg>
-                                <Image src={career} alt="" />
-                            </QuestionTypeImg>
-                            <Text>경력 질문 3개</Text>
-                        </Stack>
-                        <Stack direction="column" gap={14} align="center">
-                            <QuestionTypeImg>
-                                <Image src={tenacity} alt="" />
-                            </QuestionTypeImg>
-                            <Text>인성 질문 1개</Text>
-                        </Stack>
+                        {data?.category.map((item, i) => {
+                            return (
+                                <Stack
+                                    key={i}
+                                    direction="column"
+                                    gap={14}
+                                    align="center"
+                                >
+                                    <QuestionTypeImg>
+                                        <Image
+                                            src={categoryImg[item.category]}
+                                            alt=""
+                                        />
+                                    </QuestionTypeImg>
+                                    <Text>{`${getValueByKey(
+                                        categoryType,
+                                        item.category
+                                    )} 질문 ${item.count}개`}</Text>
+                                </Stack>
+                            );
+                        })}
                     </Stack>
                     <StartBtn>
                         풀어보기
@@ -112,6 +128,15 @@ export default function QuestionSetDetail({ id }: propsType) {
                         <CommentInput
                             type="text"
                             placeholder="질문 세트를 모두 풀어본 뒤에 댓글을 작성할 수 있습니다."
+                            value={form}
+                            onChange={handleChange}
+                            onKeyPress={(
+                                e: React.KeyboardEvent<HTMLInputElement>
+                            ) => {
+                                if (e.key === "Enter") {
+                                    mutate();
+                                }
+                            }}
                         />
                         <Image
                             src={commentFormImg}
@@ -121,14 +146,15 @@ export default function QuestionSetDetail({ id }: propsType) {
                                 right: "15px",
                                 top: "10px",
                             }}
-                        ></Image>
+                            onClick={() => mutate()}
+                        />
                     </Stack>
                     {data?.comments.map((item, i) => {
                         return (
                             <CommentBox key={i}>
                                 <Text size={13}>
                                     {item.username} · {item.job}{" "}
-                                    {item.jobDuration}
+                                    {item.job_duration}
                                     년차
                                 </Text>
                                 <Text size={16}>{item.comment}</Text>
