@@ -1,10 +1,10 @@
-import React from 'react';
-import SignUp from '../../components/organism/signup';
+import SignupCompo from "@/components/element/signup";
+import React from "react";
 
-export default function SignUpPage() {
+export default function SignupPage() {
     return (
         <>
-            <SignUp />
+            <SignupCompo />
         </>
     );
 }
