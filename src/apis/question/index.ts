@@ -177,7 +177,7 @@ export const useGetPopularQuestion = () => {
 export const useGetPopularQuestionSet = () => {
     return useQuery(["getPopularQuestionSet"], async () => {
         const { data } = await instance.get<questionSetResponse>(
-            `${path}/popular/set`
+            `${path}/set/popular`
         );
         return data;
     });
