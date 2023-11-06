@@ -44,7 +44,7 @@ export default function LoginCompo() {
                 <HeaderText>로그인</HeaderText>
                 <BigLine />
                 <Input
-                    label="이메일"
+                    label="아이디"
                     name="account_id"
                     value={account_id}
                     onChange={signFormChange}

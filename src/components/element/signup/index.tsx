@@ -1,21 +1,34 @@
-"use client";
-import React from "react";
-import { useForm } from "@/hooks/useForm";
-import { color } from "@/styles/theme";
-import styled from "styled-components";
-import { Input } from "@/components/designSystem/common/input";
-import { Stack } from "@/components/designSystem/common/stack";
-import Button from "@/components/designSystem/common/button";
+'use client';
+import React, { useState } from 'react';
+import { useForm } from '@/hooks/useForm';
+import { color } from '@/styles/theme';
+import styled from 'styled-components';
+import { Input } from '@/components/designSystem/common/input';
+import { Stack } from '@/components/designSystem/common/stack';
+import Button from '@/components/designSystem/common/button';
+import { Signup } from '@/apis/signup';
+import closeEye from 'public/assets/svg/closeEye.svg';
+import openEye from 'public/assets/svg/openEye.svg';
 
-export default function SignUp() {
+/** @returns 회원가입 page */
+export default function SignupCompo() {
+    /** 비밀번호, 비밀번호 확인 input type 구분을 위한 state */
+    const [isPassword, setIsPassword] = useState(true);
+    const [isPassword2, setIsPassword2] = useState(true);
+    /** 회원가입 data */
     const { form: signForm, handleChange: signFormChange } = useForm({
-        id: "",
-        userName: "",
-        password: "",
-        job: "",
-        career: 0,
+        account_id: '',
+        username: '',
+        password: '',
+        password2: '',
+        job: '',
+        job_duration: 0,
     });
-    const { id, userName, password, job, career } = signForm;
+    /** 회원가입 data를 구조분해할당 해놓은 부분 */
+    const { account_id, username, password, password2, job, job_duration } = signForm;
+
+    /** 회원가입 api 호출 */
+    const { mutate } = Signup(signForm);
 
     return (
         <Container>
@@ -30,33 +43,29 @@ export default function SignUp() {
                 </Header>
 
                 <InputWrapper>
-                    <Input
-                        label="아이디"
-                        name="id"
-                        value={id}
-                        onChange={signFormChange}
-                    />
+                    <Input label="아이디" name="account_id" value={account_id} onChange={signFormChange} />
 
-                    <Input
-                        label="이름"
-                        name="userName"
-                        value={userName}
-                        onChange={signFormChange}
-                    />
+                    <Input label="이름" name="username" value={username} onChange={signFormChange} />
 
-                    <Stack direction="column" width={"100px"}>
+                    <Stack direction="column" width={'100%'}>
                         <Input
                             label="비밀번호"
                             name="password"
                             value={password}
+                            type={isPassword ? 'password' : 'text'}
                             onChange={signFormChange}
+                            icon={isPassword ? closeEye : openEye}
+                            iconClick={() => setIsPassword((password) => !password)}
                         />
 
                         <Input
                             label="비밀번호 확인"
-                            name="password"
-                            value={password}
+                            name="password2"
+                            value={password2}
+                            type={isPassword2 ? 'password' : 'text'}
                             onChange={signFormChange}
+                            icon={isPassword2 ? closeEye : openEye}
+                            iconClick={() => setIsPassword2((password2) => !password2)}
                         />
                     </Stack>
 
@@ -66,7 +75,7 @@ export default function SignUp() {
                         value={job}
                         onChange={signFormChange}
                     />
-
+                        
                     <Input
                         label="경력"
                         name="career"
@@ -75,7 +84,7 @@ export default function SignUp() {
                     />
                 </InputWrapper>
 
-                <Button onClick={() => {}}>가입하기</Button>
+                <Button onClick={() => mutate()}>가입하기</Button>
             </Wrapper>
         </Container>
     );
