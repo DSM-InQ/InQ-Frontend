@@ -1,23 +1,16 @@
-import React from "react";
+import React, { InputHTMLAttributes } from "react";
 import Image from "next/image";
 import styled, { css, CSSProperties } from "styled-components";
 import { color } from "@/styles/theme";
 
-type inputType = "text" | "password" | "number";
-
-interface inputPropsType {
+interface inputPropsType extends InputHTMLAttributes<HTMLInputElement> {
     width?: string;
-    placeholder?: string;
-    disabled?: boolean;
     icon?: string;
     iconClick?: () => void;
     label?: string;
-    type?: inputType;
     margin?: CSSProperties["margin"];
     isError?: boolean;
-    name: string;
-    value: string | number;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onForm?: () => void;
 }
 
 interface checkBoxPropsType {
@@ -41,6 +34,7 @@ interface checkBoxPropsType {
  * @param name useForm쓸 때 필요한 name을 string으로 넣으면 됨
  * @param value 해당 input의 값
  * @param onChange useForm이나 useInput의 handleChange 넣으면 됨
+ * @param onForm 로그인같이 엔터치면 실행할 함수 넣으면 됨
  * @returns input components
  */
 export function Input({
@@ -56,6 +50,7 @@ export function Input({
     name,
     value,
     onChange,
+    onForm,
 }: inputPropsType) {
     return (
         <InputContainer width={width} $margin={margin}>
@@ -70,6 +65,11 @@ export function Input({
                     $isError={isError && !!value}
                     placeholder={placeholder}
                     disabled={disabled}
+                    onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                        if (e.key === "Enter") {
+                            onForm && onForm();
+                        }
+                    }}
                 />
             </label>
             {isError && !!value && <ErrorMessage>asdf</ErrorMessage>}

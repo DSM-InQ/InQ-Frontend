@@ -1,12 +1,13 @@
+import { ChangeEvent } from "react";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-interface CategoryState {
+interface categoryState {
     category: string;
     selectCategory: (categoryName: string) => void;
 }
 /** 선택한 카테코리 state */
-export const useCategoryState = create<CategoryState>()(
+export const useCategoryState = create<categoryState>()(
     devtools((set) => ({
         category: "랭킹",
         selectCategory: (categoryName: string) =>
@@ -14,14 +15,14 @@ export const useCategoryState = create<CategoryState>()(
     }))
 );
 
-interface TagState {
+interface tagState {
     tag: string[];
     selectTag: (tagName: string) => void;
     resetTag: () => void;
 }
 
 /** 선택한 태그 state */
-export const useTagState = create<TagState>()(
+export const useTagState = create<tagState>()(
     devtools((set) => ({
         tag: [],
         selectTag: (tagName: string) =>
@@ -31,5 +32,36 @@ export const useTagState = create<TagState>()(
                     : { tag: [...prev.tag, tagName] }
             ),
         resetTag: () => set({ tag: [] }),
+    }))
+);
+
+interface filterState {
+    filter: {
+        sortType: boolean;
+        questionType: "질문" | "질문세트";
+        keyword: string;
+    };
+    setForm: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+    setType: (name: string, type: string | boolean) => void;
+}
+
+/** 질문/질문세트 검색 state */
+export const useFilter = create<filterState>()(
+    devtools((set) => ({
+        filter: {
+            sortType: true,
+            questionType: "질문",
+            keyword: "",
+        },
+        setForm: (e) =>
+            set((prev) => ({
+                ...prev,
+                filter: { ...prev.filter, keyword: e.target.value },
+            })),
+        setType: (name, type) =>
+            set((prev) => ({
+                ...prev,
+                filter: { ...prev.filter, [name]: type },
+            })),
     }))
 );

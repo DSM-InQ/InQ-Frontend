@@ -15,7 +15,8 @@ export default function Provider({ children }: PropsType) {
                 keepPreviousData: true,
                 refetchOnWindowFocus: true,
                 refetchOnMount: true,
-                staleTime: 5000,
+                staleTime: 60000,
+                retry: 1,
             },
         },
     });

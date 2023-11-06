@@ -1,6 +1,16 @@
-import { useQuery } from "@tanstack/react-query";
+import {
+    MutationOptions,
+    useInfiniteQuery,
+    useMutation,
+    useQuery,
+} from "@tanstack/react-query";
 import { instance } from "../axios";
-import { questionResponse, questionSetResponse } from "./type";
+import {
+    questionListType,
+    questionResponse,
+    questionSetDetailResponse,
+    questionSetResponse,
+} from "./type";
 
 const path = "/question";
 
@@ -20,109 +30,227 @@ export const useGetTag = (category: string) => {
             return data;
         },
         {
-            enabled: category !== undefined,
+            enabled: category !== "랭킹",
         }
     );
 };
 
 /**
  * 질문 랭킹 api입니다.
- * @param page 몇 번째 page 호출할건지
  * @returns 질문 랭킹 목록 조회 api 호출 성공/실패 여부
  */
-export const useGetQuestionRank = (page: number) => {
-    return useQuery(
-        ["getQuestionRank", page],
-        async () => {
-            const queryString = page ? `?page=${page}` : "";
+export const useGetQuestionRank = () => {
+    return useInfiniteQuery(
+        ["getQuestionRank"],
+        async ({ pageParam = 0 }) => {
             const { data } = await instance.get<questionResponse>(
-                `${path}/rank${queryString}`
+                `${path}/rank?page=${pageParam}`
             );
             return data;
         },
         {
-            enabled: false,
+            getNextPageParam: (_, a) => a.length,
         }
     );
 };
 
 /**
  * 질문세트 랭킹 api입니다.
- * @param page 몇 번째 page 호출할건지
  * @returns 질문세트 랭킹 목록 조회 api 호출 성공/실패 여부
  */
-export const useGetQuestionSetRank = (page: number) => {
-    return useQuery(
-        ["getQuestionRank", page],
-        async () => {
-            const queryString = page ? `?page=${page}` : "";
+export const useGetQuestionSetRank = () => {
+    return useInfiniteQuery(
+        ["getQuestionRank"],
+        async ({ pageParam = 0 }) => {
             const { data } = await instance.get<questionSetResponse>(
-                `${path}/set/rank${queryString}`
+                `${path}/set/rank?page=${pageParam}`
             );
             return data;
         },
         {
             enabled: false,
+            getNextPageParam: (_, a) => a.length,
         }
     );
 };
 
 /**
  * 질문 목록 조회 api입니다.
- * @param page 몇 번째 page 호출할건지
  * @param category 카테고리 영어로
  * @param tags 선택한 태그들
  * @param keyword 검색할 키워드
  * @returns 질문 목록 조회 api 호출 성공/실패 여부
  */
 export const useGetQuestionList = (
-    page: number,
     category: string,
     tags?: string[],
     keyword?: string
 ) => {
-    return useQuery(
-        ["getQuestionList", page, category, tags, keyword],
-        async () => {
-            const tagsQueryString = tags?.length ? `?&tags=${tags}` : "";
+    return useInfiniteQuery(
+        ["getQuestionList", category, tags, keyword],
+        async ({ pageParam = 0 }) => {
+            const tagsQueryString = tags?.length ? `&tags=${tags}` : "";
             const keywordQueryString = keyword ? `&keyword=${keyword}` : "";
             const { data } = await instance.get<questionResponse>(
-                `${path}?category=${category}&page=${page}${tagsQueryString}${keywordQueryString}`
+                `${path}?category=${category}&page=${pageParam}${tagsQueryString}${keywordQueryString}`
             );
             return data;
         },
         {
             enabled: false,
+            getNextPageParam: (_, a) => a.length,
         }
     );
 };
 
 /**
  * 질문세트 목록 조회 api입니다.
- * @param page 몇 번째 page 호출할건지
  * @param category 카테고리 영어로
  * @param tags 선택한 태그들
  * @param keyword 검색할 키워드
  * @returns 질문세트 목록 조회 api 호출 성공/실패 여부
  */
 export const useGetQuestionSetList = (
-    page: number,
     category: string,
     tags?: string[],
     keyword?: string
 ) => {
-    return useQuery(
-        ["getQuestionList", page, category, tags, keyword],
-        async () => {
+    return useInfiniteQuery(
+        ["getQuestionSetList", category, tags, keyword],
+        async ({ pageParam = 0 }) => {
             const tagsQueryString = tags?.length ? `?&tags=${tags}` : "";
             const keywordQueryString = keyword ? `&keyword=${keyword}` : "";
             const { data } = await instance.get<questionSetResponse>(
-                `${path}/set?category=${category}&page=${page}${tagsQueryString}${keywordQueryString}`
+                `${path}/set?category=${category}&page=${pageParam}${tagsQueryString}${keywordQueryString}`
             );
             return data;
         },
         {
             enabled: false,
+            getNextPageParam: (_, a) => a.length,
+        }
+    );
+};
+
+/**
+ * 질문세트 상세보기 조회 api입니다.
+ * @param id 조회할 질문세트 id
+ * @returns 질문세트 상세보기 조회 api 호출 성공/실패 여부
+ */
+export const useGetQuestionSetDetail = (id: string) => {
+    return useQuery(["getQuestionSetDetail", id], async () => {
+        const { data } = await instance.get<questionSetDetailResponse>(
+            `${path}/set/${id}`
+        );
+        return data;
+    });
+};
+
+/**
+ * 오늘의 질문 조회 api입니다.
+ * @returns 오늘의 질문 조회 api 호출 성공/실패 여부
+ */
+export const useGetQuestionOfTheDay = () => {
+    return useQuery(["getQuestionOfTheDay"], async () => {
+        const { data } = await instance.get<questionListType>(`${path}/today`);
+        return data;
+    });
+};
+
+/**
+ * 인기 질문 조회 api입니다.
+ * @returns 인기 질문 조회 api 호출 성공/실패 여부
+ */
+export const useGetPopularQuestion = () => {
+    return useQuery(["getPopularQuestion"], async () => {
+        const { data } = await instance.get<questionResponse>(
+            `${path}/popular`
+        );
+        return data;
+    });
+};
+
+/**
+ * 인기 질문세트 조회 api입니다.
+ * @returns 인기 질문세트 조회 api 호출 성공/실패 여부
+ */
+export const useGetPopularQuestionSet = () => {
+    return useQuery(["getPopularQuestionSet"], async () => {
+        const { data } = await instance.get<questionSetResponse>(
+            `${path}/set/popular`
+        );
+        return data;
+    });
+};
+
+/**
+ * 질문세트 즐겨찾기 요청 api입니다.
+ * @param questionSetId 어떤 질문세트인지 id로 넣으면 됨
+ * @param options onSuccess, onError등등 넣으면 됨
+ * @returns 성공시 "is_favorite" : true
+ */
+export const useQuestionSetFavorite = (
+    questionSetId: number,
+    options: MutationOptions
+) => {
+    return useMutation(
+        async () => instance.post(`${path}/set/${questionSetId}/favorite`),
+        {
+            ...options,
+        }
+    );
+};
+
+/**
+ * 질문 즐겨찾기 요청 api입니다.
+ * @param questionId 어떤 질문인지 id로 넣으면 됨
+ * @param options onSuccess, onError등등 넣으면 됨
+ * @returns 성공시 "is_favorite" : true
+ */
+export const useQuestionFavorite = (
+    questionId: number,
+    options: MutationOptions
+) => {
+    return useMutation(
+        async () => instance.post(`${path}/${questionId}/favorite`),
+        {
+            ...options,
+        }
+    );
+};
+
+/**
+ * 질문세트 싫어요 api입니다.
+ * @param questionId 어떤 질문인지 id로 넣으면 됨
+ * @param options onSuccess, onError등등 넣으면 됨
+ * @returns 성공시 "is_disliked" : true
+ */
+export const useQuestionSetDislike = (
+    questionSetId: string,
+    options: MutationOptions
+) => {
+    return useMutation(
+        async () => instance.post(`${path}/set/${questionSetId}/dislike`),
+        {
+            ...options,
+        }
+    );
+};
+
+/**
+ * 질문세트 좋아요 api입니다.
+ * @param questionSetId 어떤 질문세트인지 id로 넣으면 됨
+ * @param options onSuccess, onError등등 넣으면 됨
+ * @returns "is_liked" : true
+ */
+export const useQuestionSetLike = (
+    questionSetId: string,
+    options: MutationOptions
+) => {
+    return useMutation(
+        async () => instance.post(`${path}/set/${questionSetId}/like`),
+        {
+            ...options,
         }
     );
 };

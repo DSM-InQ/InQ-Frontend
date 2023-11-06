@@ -4,7 +4,7 @@ import { color } from "@/styles/theme";
 import { categoryType } from "@/utils/Translation";
 import React from "react";
 import styled, { css } from "styled-components";
-import { Stack } from "../common/stack";
+import { Stack } from "../../designSystem/common/stack";
 
 /** @returns 카테고리 및 태그 선택 components */
 export const Category = () => {
@@ -24,7 +24,7 @@ export const Category = () => {
     ];
 
     /** 선택한 카테고리에 대한 태그 */
-    const { data, isFetching } = useGetTag(categoryType[category]);
+    const { data, isFetching } = useGetTag(category);
     return (
         <CategoryContainer>
             <CategoryBtn
@@ -46,7 +46,7 @@ export const Category = () => {
                     >
                         {categoryName}
                     </CategoryBtn>
-                    {category === categoryName &&
+                    {category === categoryType[categoryName] &&
                         !!data?.tag_list.length &&
                         !isFetching && (
                             <TagWrapper>
