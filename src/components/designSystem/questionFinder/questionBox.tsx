@@ -1,4 +1,3 @@
-"use client";
 import React, { useState } from "react";
 import styled from "styled-components";
 import thumbs from "public/assets/svg/thumbs.svg";
@@ -26,11 +25,11 @@ export const QuestionBox = ({ data }: propsType) => {
     /** 라우팅을 위한 routor 생성 */
     const router = useRouter();
     /** 즐겨찾기 관리를 위한 store */
-    const [favorite, setFavorite] = useState<boolean>(data.is_favorite);
+    const [favorite, setFavorite] = useState<boolean>(data?.is_favorite);
 
     /** 질문세트 즐겨찾기 요청 api입니다. */
     const { mutate: questionSetMutate, isLoading: questionSetIsLoading } =
-        useQuestionSetFavorite(data.question_set_id, {
+        useQuestionSetFavorite(data?.question_set_id, {
             onSuccess: () => {
                 setFavorite((prev) => !prev);
             },
@@ -41,7 +40,7 @@ export const QuestionBox = ({ data }: propsType) => {
 
     /** 질문 즐겨찾기 요청 api입니다. */
     const { mutate: questionMutate, isLoading: questionIsLoading } =
-        useQuestionFavorite(data.question_id, {
+        useQuestionFavorite(data?.question_id, {
             onSuccess: () => {
                 setFavorite((prev) => !prev);
             },
@@ -52,8 +51,8 @@ export const QuestionBox = ({ data }: propsType) => {
     return (
         <Container
             onClick={() => {
-                !!data.question_set_id &&
-                    router.push(`/${data.question_set_id}`);
+                !!data?.question_set_id &&
+                    router.push(`/${data?.question_set_id}`);
             }}
         >
             <Stack justify="space-between" align="center">
@@ -61,23 +60,23 @@ export const QuestionBox = ({ data }: propsType) => {
                     data?.question_id ? "질문" : "질문세트"
                 } : ${getValueByKey(
                     categoryType,
-                    data.category
+                    data?.category
                 )}`}</CategoryText>
                 <Stack gap={6} align="center">
                     <DateText>
-                        {data.created_at.slice(0, 10)}{" "}
-                        {data.created_at.slice(11, 16)}
+                        {data?.created_at.slice(0, 10)}{" "}
+                        {data?.created_at.slice(11, 16)}
                     </DateText>
-                    {data.like_count !== undefined && (
+                    {data?.like_count !== undefined && (
                         <>
                             <Image src={thumbs} alt="" />
-                            <NumText>{data.like_count}</NumText>
+                            <NumText>{data?.like_count}</NumText>
                         </>
                     )}
-                    {data.view_count !== undefined && (
+                    {data?.view_count !== undefined && (
                         <>
                             <Image src={user} alt="" />
-                            <NumText>{data.view_count}</NumText>
+                            <NumText>{data?.view_count}</NumText>
                         </>
                     )}
                     <FavoriteImg
@@ -86,7 +85,7 @@ export const QuestionBox = ({ data }: propsType) => {
                         $isLoading={questionSetIsLoading || questionIsLoading}
                         onClick={(e: React.MouseEvent) => {
                             e.stopPropagation();
-                            if (data.question_set_id) {
+                            if (data?.question_set_id) {
                                 !questionSetIsLoading && questionSetMutate();
                             } else {
                                 !questionIsLoading && questionMutate();
@@ -97,14 +96,14 @@ export const QuestionBox = ({ data }: propsType) => {
             </Stack>
             <Stack gap={8} align="center">
                 <TitleText>
-                    {data.question ? data.question : data.question_set_name}
+                    {data?.question ? data?.question : data?.question_set_name}
                 </TitleText>
-                {data.is_favorite && <Image src={star} alt="" />}
+                {data?.is_favorite && <Image src={star} alt="" />}
             </Stack>
             <Stack justify="space-between">
-                <UserText>{`${data.username} · ${data.job} ${data.job_duration}년차`}</UserText>
+                <UserText>{`${data?.username} · ${data?.job} ${data?.job_duration}년차`}</UserText>
                 <Stack gap={4} margin={"0 -4px 0 0"}>
-                    {data.tags.map((item, i) => (
+                    {data?.tags.map((item, i) => (
                         <Tag key={i}># {item}</Tag>
                     ))}
                 </Stack>

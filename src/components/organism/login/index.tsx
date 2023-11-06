@@ -14,7 +14,7 @@ import { getCookie } from "cookies-next";
 /** @returns 로그인 page */
 export default function LoginCompo() {
     /** 체크박스 선택 구분을 위한 state */
-    const [checkBox, setCheckBox] = useState(false);
+    const [checkBox, setCheckBox] = useState(!!getCookie("account_id"));
     /** 비밀번호 input type 구분을 위한 state */
     const [isPassword, setIsPassword] = useState(true);
     /** 로그인 data */
@@ -58,6 +58,7 @@ export default function LoginCompo() {
                     margin="24px 0 78px 0"
                     icon={isPassword ? closeEye : openEye}
                     iconClick={() => setIsPassword((password) => !password)}
+                    onForm={() => mutate()}
                 />
                 <CheckBox
                     text="아이디 저장"

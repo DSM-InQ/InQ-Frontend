@@ -16,45 +16,48 @@ export default function Header() {
     /** pathname 확인을 위해 생성 */
     const pathname = usePathname();
     return (
-        <Container>
-            <Stack align="center" width="434px" justify="space-between">
-                <Image
-                    src={logo}
-                    alt=""
-                    onClick={() => router.push("/")}
-                    style={{ cursor: "pointer" }}
-                />
-                <Text
-                    onClick={() => router.push("??")}
-                    $isSelect={pathname.includes("??")}
-                >
-                    질문 등록
-                </Text>
-                <Text
-                    onClick={() => router.push("??")}
-                    $isSelect={pathname.includes("??")}
-                >
-                    질문세트 등록
-                </Text>
-                <Text
-                    onClick={() => router.push("/searchQuestion")}
-                    $isSelect={pathname.includes("searchQuestion")}
-                >
-                    질문 찾기
-                </Text>
-            </Stack>
-            <Stack align="center" width="134px" justify="space-between">
-                <Text
-                    onClick={() => {
-                        deleteCookie("access_token");
-                        router.push("/login");
-                    }}
-                >
-                    로그아웃
-                </Text>
-                <Image src={personImg} alt="" />
-            </Stack>
-        </Container>
+        <>
+            <Container>
+                <Stack align="center" width="434px" justify="space-between">
+                    <Image
+                        src={logo}
+                        alt=""
+                        onClick={() => router.push("/")}
+                        style={{ cursor: "pointer" }}
+                    />
+                    <Text
+                        onClick={() => router.push("??")}
+                        $isSelect={pathname.includes("??")}
+                    >
+                        질문 등록
+                    </Text>
+                    <Text
+                        onClick={() => router.push("??")}
+                        $isSelect={pathname.includes("??")}
+                    >
+                        질문세트 등록
+                    </Text>
+                    <Text
+                        onClick={() => router.push("/searchQuestion")}
+                        $isSelect={pathname.includes("searchQuestion")}
+                    >
+                        질문 찾기
+                    </Text>
+                </Stack>
+                <Stack align="center" width="134px" justify="space-between">
+                    <Text
+                        onClick={() => {
+                            deleteCookie("access_token");
+                            router.push("/login");
+                        }}
+                    >
+                        로그아웃
+                    </Text>
+                    <Image src={personImg} alt="" />
+                </Stack>
+            </Container>
+            <Spacer />
+        </>
     );
 }
 
@@ -81,4 +84,8 @@ const Text = styled.div<{ $isSelect?: boolean }>`
     &:hover {
         font-weight: 700;
     }
+`;
+
+const Spacer = styled.div`
+    height: 70px;
 `;

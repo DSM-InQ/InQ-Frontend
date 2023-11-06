@@ -4,7 +4,7 @@ import styled, { CSSProperties } from "styled-components";
 import chevron from "public/assets/svg/chevron.svg";
 import { color } from "@/styles/theme";
 
-interface DropDownProps<T> {
+interface dropDownProps<T> {
     value?: T;
     margin?: CSSProperties["margin"];
     width?: string;
@@ -29,7 +29,7 @@ export const DropDown = <T extends string>({
     disabled = false,
     onChange,
     option,
-}: DropDownProps<T>) => {
+}: dropDownProps<T>) => {
     /** 드롭다운을 열고 닫기 위한 state */
     const [isopen, setIsopen] = useState<boolean>(false);
     /** 드롭다운의 값을 관리하기 위한 state */

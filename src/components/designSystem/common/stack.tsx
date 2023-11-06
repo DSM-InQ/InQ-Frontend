@@ -9,9 +9,12 @@ interface propsType {
     justify?: CSSProperties["justifyContent"];
     gap?: number;
     margin?: CSSProperties["margin"];
+    padding?: CSSProperties["padding"];
     wrap?: CSSProperties["flexWrap"];
     children?: ReactNode;
     position?: CSSProperties["position"];
+    cursor?: CSSProperties["cursor"];
+    onClick?: () => void;
 }
 
 interface stylePropsType {
@@ -22,9 +25,11 @@ interface stylePropsType {
     $justify?: CSSProperties["justifyContent"];
     $gap?: number;
     $margin?: CSSProperties["margin"];
+    $padding?: CSSProperties["padding"];
     wrap?: CSSProperties["flexWrap"];
     children?: ReactNode;
     $position?: CSSProperties["position"];
+    cursor?: CSSProperties["cursor"];
 }
 
 /**
@@ -36,8 +41,11 @@ interface stylePropsType {
  * @param gap 요소들간에 격차
  * @param wrap flex-wrap 넣듯이 string으로 넣으면 됨
  * @param margin 문자열로 넣으면 됨 ex) '10px' ex) '10px 10px'
+ * @param padding 문자열로 넣으면 됨 ex) '10px' ex) '10px 10px'
  * @param children ReactNode
  * @param position position 넣듯이 string으로 넣으면 됨
+ * @param cursor cursor 넣듯이 string으로 넣으면 됨
+ * @param onClick 클릭시 실행할 함수
  * @returns stack components
  */
 export const Stack = ({
@@ -49,8 +57,11 @@ export const Stack = ({
     gap,
     wrap,
     margin,
+    padding,
     children,
     position = "static",
+    cursor = "default",
+    onClick,
 }: propsType) => {
     return (
         <Container
@@ -62,7 +73,10 @@ export const Stack = ({
             $gap={gap}
             wrap={wrap}
             $margin={margin}
+            $padding={padding}
             $position={position}
+            cursor={cursor}
+            onClick={() => onClick && onClick()}
         >
             {children}
         </Container>
@@ -80,4 +94,6 @@ const Container = styled.div<stylePropsType>`
     flex-wrap: ${({ wrap }) => wrap};
     gap: ${({ $gap }) => $gap}px;
     margin: ${({ $margin }) => $margin};
+    padding: ${({ $padding }) => $padding};
+    cursor: ${({ cursor }) => cursor};
 `;

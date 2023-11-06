@@ -13,6 +13,7 @@ export interface questionListType {
     question: string;
     question_set_id: number;
     question_set_name: string;
+    rank: number;
     created_at: string;
     category: string;
     username: string;

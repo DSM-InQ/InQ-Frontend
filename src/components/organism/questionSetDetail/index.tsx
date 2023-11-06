@@ -4,13 +4,18 @@ import styled from "styled-components";
 import { color } from "@/styles/theme";
 import backImg from "public/assets/svg/backImg.svg";
 import thumbs from "public/assets/svg/thumbs.svg";
+import clickThumbs from "public/assets/svg/clickThumbs.svg";
 import user from "public/assets/svg/user.svg";
 import commentFormImg from "public/assets/svg/commentFormImg.svg";
 import up from "public/assets/svg/up.svg";
 import Image from "next/image";
 import { Stack } from "@/components/designSystem/common/stack";
 import { Text } from "@/components/designSystem/common/text";
-import { useGetQuestionSetDetail } from "@/apis/question";
+import {
+    useGetQuestionSetDetail,
+    useQuestionSetDislike,
+    useQuestionSetLike,
+} from "@/apis/question";
 import { useRouter } from "next/navigation";
 import { categoryImg, categoryType } from "@/utils/Translation";
 import { getValueByKey } from "@/utils/useGetPropertyKey";
@@ -30,17 +35,41 @@ export default function QuestionSetDetail({ id }: propsType) {
     const router = useRouter();
 
     /** 키워드 input의 state */
-    const { form, handleChange } = useInput("");
+    const { form, setForm, handleChange } = useInput("");
 
     /** 질문세트 상세보기 data */
     const { data, refetch } = useGetQuestionSetDetail(id);
-    const { mutate } = useQuestionSetWriteComment(id, form, {
+    /** 질문세트 댓글달기 api 호출입니다. */
+    const { mutate: writeCommentMutate } = useQuestionSetWriteComment(
+        id,
+        form,
+        {
+            onSuccess: () => {
+                alert("댓글이 성공적으로 작성되었습니다.");
+                setForm("");
+                refetch();
+            },
+            onError: () => {
+                alert("댓글 작성을 실패하였습니다.");
+            },
+        }
+    );
+    /** 질문세트 싫어요 api 호출입니다. */
+    const { mutate: dislikeMutate } = useQuestionSetDislike(id, {
         onSuccess: () => {
-            alert("댓글이 성공적으로 작성되었습니다.");
             refetch();
         },
         onError: () => {
-            alert("댓글 작성을 실패하였습니다.");
+            alert("싫어요를 실패하였습니다.");
+        },
+    });
+    /** 질문세트 좋아요 api 호출입니다. */
+    const { mutate: likeMutate } = useQuestionSetLike(id, {
+        onSuccess: () => {
+            refetch();
+        },
+        onError: () => {
+            alert("좋아요를 실패하였습니다.");
         },
     });
     return (
@@ -49,7 +78,7 @@ export default function QuestionSetDetail({ id }: propsType) {
                 <Image
                     src={backImg}
                     alt=""
-                    style={{ marginBottom: "80px" }}
+                    style={{ marginBottom: "80px", cursor: "pointer" }}
                     onClick={() => {
                         router.back();
                     }}
@@ -69,16 +98,36 @@ export default function QuestionSetDetail({ id }: propsType) {
                         </Text>
                     </Stack>
                     <Stack gap={16}>
-                        <Stack gap={6}>
-                            <Image src={thumbs} alt="" />
+                        <Stack
+                            gap={6}
+                            cursor={
+                                data?.is_disliked ? "not-allowed" : "pointer"
+                            }
+                            onClick={() => {
+                                !data?.is_disliked && likeMutate();
+                            }}
+                        >
+                            <Image
+                                src={data?.is_liked ? clickThumbs : thumbs}
+                                alt=""
+                                style={{ width: "20px", height: "20px" }}
+                            />
                             <Text size={16}>{data?.like_count}</Text>
                         </Stack>
-                        <Stack gap={6}>
+                        <Stack
+                            gap={6}
+                            cursor={data?.is_liked ? "not-allowed" : "pointer"}
+                            onClick={() => {
+                                !data?.is_liked && dislikeMutate();
+                            }}
+                        >
                             <Image
-                                src={thumbs}
+                                src={data?.is_disliked ? clickThumbs : thumbs}
                                 alt=""
                                 style={{
                                     rotate: "180deg",
+                                    width: "20px",
+                                    height: "20px",
                                 }}
                             />
                             <Text size={16}>{data?.dislike_count}</Text>
@@ -119,7 +168,7 @@ export default function QuestionSetDetail({ id }: propsType) {
                     </Stack>
                     <StartBtn>
                         풀어보기
-                        <Image src={up} alt=""></Image>
+                        <Image src={up} alt="" />
                     </StartBtn>
                 </Stack>
                 <CommentWrapper>
@@ -134,7 +183,7 @@ export default function QuestionSetDetail({ id }: propsType) {
                                 e: React.KeyboardEvent<HTMLInputElement>
                             ) => {
                                 if (e.key === "Enter") {
-                                    mutate();
+                                    writeCommentMutate();
                                 }
                             }}
                         />
@@ -146,7 +195,7 @@ export default function QuestionSetDetail({ id }: propsType) {
                                 right: "15px",
                                 top: "10px",
                             }}
-                            onClick={() => mutate()}
+                            onClick={() => writeCommentMutate()}
                         />
                     </Stack>
                     {data?.comments.map((item, i) => {
@@ -171,7 +220,7 @@ const Container = styled.div`
     width: 100vw;
     display: flex;
     justify-content: center;
-    margin-top: 130px;
+    margin: 60px 0;
 `;
 
 const QuestionTypeImg = styled.div`

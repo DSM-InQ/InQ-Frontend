@@ -14,193 +14,199 @@ import {
     useGetQuestionSetList,
     useGetQuestionSetRank,
 } from "@/apis/question";
-import { questionResponse, questionSetResponse } from "@/apis/question/type";
-import { useCategoryState, useTagState } from "@/store/questionState";
-import { useInput } from "@/hooks/useInput";
-import { useDidMountEffect } from "@/hooks/useDidMountEffect";
+import {
+    useCategoryState,
+    useFilter,
+    useTagState,
+} from "@/store/questionState";
+import { useDebounce } from "@/utils/useDebounce";
 
 /** @returns 질문 목록 및 검색 components */
 export default function QuestionList() {
-    /** 페이징을 위한 state */
-    const [page, setPage] = useState<number>(0);
-    /** 질문을 오름차순 / 내림차순으로 정렬할지 구분하는 state */
-    const [sortType, setSortType] = useState<boolean>(true);
+    /** 키워드 검색, 질문/질문세트 검색, 정렬을 관리하는 state */
+    const { filter, setForm, setType } = useFilter();
     /** 선택한 카테고리 state */
     const { category } = useCategoryState();
     /** 선택한 태그 state */
     const { tag } = useTagState();
-    /** 질문인지 질문세트인지 구분하는 state */
-    const [questionType, setQuestionType] = useState<string>("질문");
-    /** 질문 / 질문세트 총 data */
-    const [question, setQuestion] = useState<questionResponse>({
-        has_next: false,
-        question_list: [],
-    });
-    /** 키워드 input의 state */
-    const { form, handleChange } = useInput("");
 
     /** 질문 랭킹 목록 */
-    const { data: questionRanking, refetch: questionRankingRefetch } =
-        useGetQuestionRank(page);
+    const {
+        data: questionRanking,
+        fetchNextPage: questionRankingFetchNextPage,
+        refetch: questionRankingRefetch,
+        isFetching: questionRankingIsFetching,
+    } = useGetQuestionRank();
     /** 질문 랭킹 목록 */
-    const { data: questionSetRanking, refetch: questionSetRankingRefetch } =
-        useGetQuestionSetRank(page);
+    const {
+        data: questionSetRanking,
+        fetchNextPage: questionSetRankingFetchNextPage,
+        refetch: questionSetRankingRefetch,
+        isFetching: questionSetRankingIsFetching,
+    } = useGetQuestionSetRank();
     /** 질문 목록 */
-    const { data: questionList, refetch: questionListRefetch } =
-        useGetQuestionList(page, category, tag, form);
+    const {
+        data: questionList,
+        fetchNextPage: questionListFetchNextPage,
+        refetch: questionListRefetch,
+    } = useGetQuestionList(category, tag, filter.keyword);
     /** 질문세트 목록 */
-    const { data: questionSetList, refetch: questionSetListRefetch } =
-        useGetQuestionSetList(page, category, tag, form);
-
-    /** 값을 더해줄 때 */
-    const addQuestion = (item: questionResponse | questionSetResponse) => {
-        questionType === "질문"
-            ? item &&
-              setQuestion((prev) => ({
-                  has_next: item.has_next,
-                  question_list: [
-                      ...prev.question_list,
-                      ...(item as questionResponse).question_list,
-                  ],
-              }))
-            : item &&
-              setQuestion((prev) => ({
-                  has_next: item.has_next,
-                  question_list: [
-                      ...prev.question_list,
-                      ...(item as questionSetResponse).question_sets_list,
-                  ],
-              }));
-    };
-
-    /** 값이 refetch 됐을 때 */
-    const refetchQuestion = (item: questionResponse | questionSetResponse) => {
-        questionType === "질문"
-            ? item &&
-              setQuestion({
-                  has_next: item.has_next,
-                  question_list: (item as questionResponse).question_list,
-              })
-            : item &&
-              setQuestion({
-                  has_next: item.has_next,
-                  question_list: (item as questionSetResponse)
-                      .question_sets_list,
-              });
-    };
+    const {
+        data: questionSetList,
+        fetchNextPage: questionSetListFetchNextPage,
+        refetch: questionSetListRefetch,
+    } = useGetQuestionSetList(category, tag, filter.keyword);
 
     /** 현재 상태에 따라 새로 값 세팅 */
-    const saveQuestion = async (isAdd: boolean = false) => {
-        if (questionType === "질문") {
+    const saveQuestion = async (isAdd = false) => {
+        if (filter.questionType === "질문") {
             if (category === "랭킹") {
-                const newQuestionRanking = await questionRankingRefetch();
                 isAdd
-                    ? addQuestion(newQuestionRanking.data!)
-                    : refetchQuestion(newQuestionRanking.data!);
+                    ? questionRankingFetchNextPage()
+                    : questionRankingRefetch();
             } else {
-                const newQuestionList = await questionListRefetch();
-                isAdd
-                    ? addQuestion(newQuestionList.data!)
-                    : refetchQuestion(newQuestionList.data!);
+                isAdd ? questionListFetchNextPage() : questionListRefetch();
             }
         } else {
             if (category === "랭킹") {
-                const newQuestionSetRanking = await questionSetRankingRefetch();
                 isAdd
-                    ? addQuestion(newQuestionSetRanking.data!)
-                    : refetchQuestion(newQuestionSetRanking.data!);
+                    ? questionSetRankingFetchNextPage()
+                    : questionSetRankingRefetch();
             } else {
-                const newQuestionSetList = await questionSetListRefetch();
                 isAdd
-                    ? addQuestion(newQuestionSetList.data!)
-                    : refetchQuestion(newQuestionSetList.data!);
+                    ? questionSetListFetchNextPage()
+                    : questionSetListRefetch();
+            }
+        }
+    };
+
+    /** 현재 상태에 따라 새로 값 세팅 */
+    const questionOrQuestionSetData = () => {
+        if (filter.questionType === "질문") {
+            if (category === "랭킹") {
+                return questionRanking?.pages.flatMap(
+                    (prev) => prev.question_list
+                );
+            } else {
+                return questionList?.pages
+                    .flatMap((prev) => prev.question_list)
+                    .sort(
+                        (a, b) =>
+                            new Date(
+                                filter.sortType ? b.created_at : a.created_at
+                            ).getTime() -
+                            new Date(
+                                filter.sortType ? a.created_at : b.created_at
+                            ).getTime()
+                    );
+            }
+        } else {
+            if (category === "랭킹") {
+                return questionSetRanking?.pages.flatMap(
+                    (prev) => prev.question_sets_list
+                );
+            } else {
+                return questionSetList?.pages
+                    .flatMap((prev) => prev.question_sets_list)
+                    .sort(
+                        (a, b) =>
+                            new Date(
+                                filter.sortType ? b.created_at : a.created_at
+                            ).getTime() -
+                            new Date(
+                                filter.sortType ? a.created_at : b.created_at
+                            ).getTime()
+                    );
+            }
+        }
+    };
+
+    /** 다음 페이지가 있는지 확인 */
+    const questionOrQuestionNextPage = () => {
+        if (filter.questionType === "질문") {
+            if (category === "랭킹") {
+                return questionRanking?.pages.at(-1)?.has_next!;
+            } else {
+                return questionList?.pages.at(-1)?.has_next!;
+            }
+        } else {
+            if (category === "랭킹") {
+                return questionSetRanking?.pages.at(-1)?.has_next!;
+            } else {
+                return questionSetList?.pages.at(-1)?.has_next!;
             }
         }
     };
 
     /** 질문/질문세트 검색 */
     useEffect(() => {
-        setQuestion({ has_next: false, question_list: [] });
-        setPage(0);
         setTimeout(saveQuestion);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [
-        questionRanking,
-        questionSetRanking,
-        questionList,
-        questionSetList,
-        questionType,
-        category,
-        tag,
-    ]);
+    }, [category, tag, filter.questionType]);
 
     /** 디바운스 구현 */
-    useDidMountEffect(() => {
-        const debounce = setTimeout(() => {
-            return saveQuestion();
-        }, 500);
-        return () => clearTimeout(debounce);
+    const debouncedSearchTerm = useDebounce(filter.keyword, 500);
+    /** 디바운스 구현 */
+    useEffect(() => {
+        if (debouncedSearchTerm) {
+            saveQuestion();
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [form]);
+    }, [debouncedSearchTerm]);
+
     return (
         <Stack direction="column" align="center" gap={40}>
-            <Stack width="790px" justify="end" gap={16}>
-                <InputWrapper>
-                    <SearchInput
-                        value={form}
-                        onChange={handleChange}
-                        disabled={category === "랭킹"}
+            <>
+                <Stack width="790px" justify="end" gap={16}>
+                    <InputWrapper>
+                        <SearchInput
+                            value={filter.keyword}
+                            name="keyword"
+                            onChange={setForm}
+                            disabled={category === "랭킹"}
+                        />
+                        <SearchImage src={search} alt="" />
+                    </InputWrapper>
+                    <DropDown
+                        width="135px"
+                        onChange={(type) => {
+                            setType("questionType", type);
+                        }}
+                        option={["질문", "질문세트"]}
+                        value={filter.questionType}
                     />
-                    <SearchImage src={search} alt="" />
-                </InputWrapper>
-                <DropDown
-                    width="135px"
-                    onChange={(type) => {
-                        setQuestionType(type);
-                    }}
-                    option={["질문", "질문세트"]}
-                    value={questionType}
-                />
-                <SortBtn
-                    onClick={() => setSortType((prev) => !prev)}
-                    disabled={category === "랭킹"}
-                >
-                    <SortImg
-                        src={sort}
-                        alt=""
-                        $sortType={sortType}
+                    <SortBtn
+                        onClick={() => setType("sortType", !filter.sortType)}
                         disabled={category === "랭킹"}
-                    />
-                    {sortType ? "최신순" : "오래된순"}
-                </SortBtn>
-            </Stack>
-            {category === "랭킹"
-                ? question.question_list?.map((item, i) => {
-                      return <QuestionBox key={i} data={item} />;
-                  })
-                : question.question_list
-                      ?.sort(
-                          (a, b) =>
-                              new Date(
-                                  sortType ? b.created_at : a.created_at
-                              ).getTime() -
-                              new Date(
-                                  sortType ? a.created_at : b.created_at
-                              ).getTime()
-                      )
-                      .map((item, i) => {
-                          return <QuestionBox key={i} data={item} />;
-                      })}
-            {question.has_next && (
-                <AddQuestion
-                    onClick={() => {
-                        setPage((prev) => ++prev);
-                        setTimeout(() => saveQuestion(true));
-                    }}
-                >
-                    더보기 +
-                </AddQuestion>
-            )}
+                    >
+                        <SortImg
+                            src={sort}
+                            alt=""
+                            $sortType={filter.sortType}
+                            disabled={category === "랭킹"}
+                        />
+                        {filter.sortType ? "최신순" : "오래된순"}
+                    </SortBtn>
+                </Stack>
+                {questionOrQuestionSetData()?.map((item, i) => {
+                    return (
+                        item !== undefined && (
+                            <QuestionBox key={i} data={item} />
+                        )
+                    );
+                })}
+                {!questionRankingIsFetching &&
+                    !questionSetRankingIsFetching &&
+                    questionOrQuestionNextPage() && (
+                        <AddQuestion
+                            onClick={() => {
+                                saveQuestion(true);
+                            }}
+                        >
+                            더보기 +
+                        </AddQuestion>
+                    )}
+            </>
         </Stack>
     );
 }

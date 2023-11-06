@@ -19,5 +19,5 @@ const Container = styled.div`
     display: flex;
     justify-content: center;
     gap: 59px;
-    margin-top: 170px;
+    margin: 70px 0;
 `;
