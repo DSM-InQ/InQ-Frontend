@@ -5,8 +5,6 @@ import { useMutation } from '@tanstack/react-query';
 import { instance } from '../axios';
 import { AxiosError } from 'axios';
 
-const BASE_URL = 'http://43.200.116.136:8080';
-
 /**
  *회원가입
  * @param signupData 아이디, 이름, 비밀번호, 직업, 경력
@@ -15,7 +13,7 @@ const BASE_URL = 'http://43.200.116.136:8080';
 export const Signup = (signupData: Omit<signupDataType, 'password2'>) => {
     const router = useRouter();
 
-    return useMutation(async () => instance.post(`${BASE_URL}/user`, signupData), {
+    return useMutation(async () => instance.post(`/user`, signupData), {
         onSuccess: () => {
             router.push('/login');
         },
