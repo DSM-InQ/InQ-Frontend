@@ -1,4 +1,4 @@
-import SignupCompo from "@/components/element/signup";
+import SignupCompo from "@/components/organism/signup";
 import React from "react";
 
 export default function SignupPage() {
