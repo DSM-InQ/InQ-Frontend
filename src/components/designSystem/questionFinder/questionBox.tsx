@@ -1,16 +1,16 @@
-"use client";
-import React from "react";
-import styled from "styled-components";
-import thumbsUp from "public/assets/svg/thumbsUp.svg";
-import star from "public/assets/svg/star.svg";
-import user from "public/assets/svg/user.svg";
-import Image from "next/image";
-import { color } from "@/styles/theme";
-import { Stack } from "../common/stack";
-import { questionListType } from "@/apis/question/type";
-import { getValueByKey } from "@/utils/useGetPropertyKey";
-import { categoryType } from "@/utils/Translation";
-import { useRouter } from "next/navigation";
+'use client';
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import thumbsUp from 'public/assets/svg/thumbsUp.svg';
+import star from 'public/assets/svg/star.svg';
+import user from 'public/assets/svg/user.svg';
+import Image from 'next/image';
+import { color } from '@/styles/theme';
+import { Stack } from '../common/stack';
+import { questionListType } from '@/apis/question/type';
+import { getValueByKey } from '@/utils/useGetPropertyKey';
+import { categoryType } from '@/utils/Translation';
+import { useRouter } from 'next/navigation';
 
 interface propsType {
     data: questionListType;
@@ -21,23 +21,21 @@ interface propsType {
  * @returns 질문 박스 components
  */
 export const QuestionBox = ({ data }: propsType) => {
+    const [checkBox, setCheckBox] = useState(data.checkBox);
     const router = useRouter();
+
     return (
         <Container
             onClick={() => {
-                !!data.question_set_name &&
-                    router.push(String(data.question_set_id));
+                !!data.question_set_name && router.push(String(data.question_set_id));
             }}
         >
             <Stack justify="space-between" align="center">
-                <CategoryText>{`질문 : ${getValueByKey(
-                    categoryType,
-                    data.category
-                )}`}</CategoryText>
-                <Stack gap={6}>
+                <CategoryText>{`질문 : ${data.category}`}</CategoryText>
+                <Stack direction="column" align="flex-end" gap={6}>
+                    {/* <CheckBox checkBox={checkBox} /> */}
                     <DateText>
-                        {data.created_at.slice(0, 10)}{" "}
-                        {data.created_at.slice(11, 16)}
+                        {data.created_at.slice(0, 10)} {data.created_at.slice(11, 16)}
                     </DateText>
                     {data.like_count !== undefined && (
                         <>
@@ -54,14 +52,12 @@ export const QuestionBox = ({ data }: propsType) => {
                 </Stack>
             </Stack>
             <Stack gap={8} align="center">
-                <TitleText>
-                    {data.question ? data.question : data.question_set_name}
-                </TitleText>
+                <TitleText>{data.question ? data.question : data.question_set_name}</TitleText>
                 {data.is_favorite && <Image src={star} alt="" />}
             </Stack>
             <Stack justify="space-between">
                 <UserText>{`${data.username} · ${data.job} ${data.job_duration}년차`}</UserText>
-                <Stack gap={4} margin={"0 -4px 0 0"}>
+                <Stack gap={4} margin={'0 -4px 0 0'}>
                     {data.tags.map((item, i) => (
                         <Tag key={i}># {item}</Tag>
                     ))}
@@ -75,7 +71,7 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    width: 790px;
+    width: 100%;
     height: 148px;
     gap: 12px;
     border-radius: 8px;
@@ -94,6 +90,14 @@ const CategoryText = styled.div`
     font-weight: 400;
     margin-top: -6px;
 `;
+
+// const CheckBox = styled.button<{
+//     display: string;
+// }>`
+//     display: ${({ checkBox }) => checkBox};
+//     width: 24px;
+//     height: 24px;
+// `;
 
 const DateText = styled.div`
     color: ${color.gray5};

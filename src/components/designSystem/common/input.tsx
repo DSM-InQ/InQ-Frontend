@@ -1,9 +1,9 @@
-import React from "react";
-import Image from "next/image";
-import styled, { css, CSSProperties } from "styled-components";
-import { color } from "@/styles/theme";
+import React from 'react';
+import Image from 'next/image';
+import styled, { css, CSSProperties } from 'styled-components';
+import { color } from '@/styles/theme';
 
-type inputType = "text" | "password" | "number";
+type inputType = 'text' | 'password' | 'number';
 
 interface inputPropsType {
     width?: string;
@@ -13,17 +13,18 @@ interface inputPropsType {
     iconClick?: () => void;
     label?: string;
     type?: inputType;
-    margin?: CSSProperties["margin"];
+    margin?: CSSProperties['margin'];
     isError?: boolean;
     name: string;
     value: string | number;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 interface checkBoxPropsType {
     disabled?: boolean;
     text?: string;
-    margin?: CSSProperties["margin"];
+    margin?: CSSProperties['margin'];
     checked: boolean;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -41,21 +42,23 @@ interface checkBoxPropsType {
  * @param name useForm쓸 때 필요한 name을 string으로 넣으면 됨
  * @param value 해당 input의 값
  * @param onChange useForm이나 useInput의 handleChange 넣으면 됨
+ * @param onKeyDown Input의 handleKeyDown 넣으면 됨
  * @returns input components
  */
 export function Input({
-    width = "100%",
+    width = '100%',
     placeholder,
     disabled = false,
     icon,
     iconClick,
     label,
-    type = "text",
+    type = 'text',
     margin = 0,
     isError = false,
     name,
     value,
     onChange,
+    onKeyDown,
 }: inputPropsType) {
     return (
         <InputContainer width={width} $margin={margin}>
@@ -65,6 +68,7 @@ export function Input({
                     type={type}
                     name={name}
                     value={value}
+                    onKeyDown={onKeyDown}
                     onChange={onChange}
                     width={width}
                     $isError={isError && !!value}
@@ -86,21 +90,10 @@ export function Input({
  * @param onChange 클릭 시 실행할 함수
  * @returns checkBox components
  */
-export function CheckBox({
-    disabled = false,
-    text,
-    margin = 0,
-    checked,
-    onChange,
-}: checkBoxPropsType) {
+export function CheckBox({ disabled = false, text, margin = 0, checked, onChange }: checkBoxPropsType) {
     return (
         <CheckBoxContainer $margin={margin}>
-            <CheckBoxStyle
-                type="checkbox"
-                checked={checked}
-                onChange={onChange}
-                disabled={disabled}
-            />
+            <CheckBoxStyle type="checkbox" checked={checked} onChange={onChange} disabled={disabled} />
             <SideText>{text}</SideText>
         </CheckBoxContainer>
     );
@@ -109,7 +102,7 @@ export function CheckBox({
 /** type이 text거나 number일 때 쓰는 스타일 */
 const InputContainer = styled.div<{
     width: string;
-    $margin: CSSProperties["margin"];
+    $margin: CSSProperties['margin'];
 }>`
     position: relative;
     display: flex;
@@ -129,19 +122,14 @@ const Label = styled.div`
 const InputStyle = styled.input<{ $isError?: boolean }>`
     width: 100%;
     height: 46px;
-    border: ${({ $isError }) =>
-        $isError
-            ? css`1px solid ${color.errorDefault}`
-            : css`1px solid ${color.gray5}`};
+    border: ${({ $isError }) => ($isError ? css`1px solid ${color.errorDefault}` : css`1px solid ${color.gray5}`)};
     border-radius: 4px;
     font-size: 16px;
     padding: 0 50px 0 10px;
     transition: 0.5s;
     &:focus {
         border: ${({ $isError }) =>
-            $isError
-                ? css`1px solid ${color.errorDefault}`
-                : css`1px solid ${color.primaryDefault}`};
+            $isError ? css`1px solid ${color.errorDefault}` : css`1px solid ${color.primaryDefault}`};
     }
 `;
 
@@ -164,7 +152,7 @@ const ErrorMessage = styled.div`
 
 // type이 checkBox일 때 쓰는 스타일
 const CheckBoxContainer = styled.label<{
-    $margin: CSSProperties["margin"];
+    $margin: CSSProperties['margin'];
 }>`
     width: 125px;
     height: 30px;
@@ -183,7 +171,7 @@ const CheckBoxStyle = styled.input`
     border-radius: 2px;
     &:checked {
         border-color: transparent;
-        background-image: url("/assets/svg/check.svg");
+        background-image: url('/assets/svg/check.svg');
         background-size: 80% 80%;
         background-position: 50%;
         background-repeat: no-repeat;
