@@ -1,6 +1,7 @@
 import { MutationOptions, useMutation } from "@tanstack/react-query";
 import { instance } from "../axios";
 
+const BASE_URL = process.env.NEXT_PUBLIC_API_KEY;
 const path = "/comment";
 
 /**
@@ -17,7 +18,7 @@ export const useQuestionSetWriteComment = (
 ) => {
     return useMutation(
         async () =>
-            instance.post(`${path}/question-set/${questionSetId}`, {
+            instance.post(`${BASE_URL}${path}/question-set/${questionSetId}`, {
                 comment: comment,
             }),
         {

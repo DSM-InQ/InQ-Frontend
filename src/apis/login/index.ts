@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { loginDataType } from "./type";
 import { instance } from "@/apis/axios";
 
+const BASE_URL = process.env.NEXT_PUBLIC_API_KEY;
 const path = "/user";
 
 /**
@@ -16,7 +17,7 @@ const path = "/user";
  */
 export const Login = (loginData: loginDataType, checkBoxValue: boolean) => {
     const router = useRouter();
-    return useMutation(async () => instance.post(`${path}/auth`, loginData), {
+    return useMutation(async () => instance.post(`${BASE_URL}${path}/auth`, loginData), {
         onSuccess: (res) => {
             if (checkBoxValue) {
                 setCookie("account_id", loginData.account_id);
