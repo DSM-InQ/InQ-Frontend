@@ -1,6 +1,7 @@
+"use client";
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { color } from '@/styles/theme';
+import { color } from '../../../styles/theme';
 import { useRouter } from 'next/navigation';
 
 /**
@@ -20,23 +21,23 @@ export function SideBar() {
         },
         {
             label: '답변 내역',
-            endPoint: '/answerHistory',
+            endPoint: '???',
         },
         {
             label: '등록한 질문',
-            endPoint: '/myQuestion',
+            endPoint: '???',
         },
         {
             label: '등록한 질문 세트',
-            endPoint: '/mySet',
+            endPoint: '???',
         },
         {
             label: '즐겨찾기한 질문',
-            endPoint: '/myFavoriteQuestion',
+            endPoint: '???',
         },
         {
             label: '즐겨찾기한 질문 세트',
-            endPoint: '/myFavoriteSet',
+            endPoint: '???',
         },
     ];
 

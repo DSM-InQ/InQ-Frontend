@@ -1,35 +1,38 @@
-import Image from "next/image";
-import React, { useEffect, useRef, useState } from "react";
-import styled, { CSSProperties } from "styled-components";
-import chevron from "public/assets/svg/chevron.svg";
-import { color } from "@/styles/theme";
+import Image from 'next/image';
+import React, { useEffect, useRef, useState } from 'react';
+import styled, { CSSProperties } from 'styled-components';
+import chevron from 'public/assets/svg/chevron.svg';
+import { color } from '@/styles/theme';
 
-interface dropDownProps<T> {
+interface DropDownProps<T> {
+    label?: string;
     value?: T;
-    margin?: CSSProperties["margin"];
+    margin?: CSSProperties['margin'];
+    border?: string;
     width?: string;
-    disabled?: boolean;
     onChange: (value: T) => void;
     option: T[];
 }
 
 /**
- * @param value input에 value 넣듯이 넣으면 됨
+ * @param label label string으로 넣으면 됨
  * @param margin 문자열로 넣으면 됨 ex) '10px' ex) '10px 10px'
- * @param width string으로 넣으면 됨 ex) '100%'
- * @param disabled 어떨 때 disabled인지
- * @param onChange 선택지 클릭시 해당 선택지를 string으로 return 해줌
+ * @param border 문자열로 넣으면 됨 ex) `1px solid ${color.gray4}`
  * @param option 선택지 배열로 넣으면 됨
+ * @param value input에 value 넣듯이 넣으면 됨
+ * @param onChange 선택지 클릭시 해당 선택지를 string으로 return 해줌
+ * @param width string으로 넣으면 됨 ex) '100%'
  * @returns 드롭다운 components
  */
 export const DropDown = <T extends string>({
-    value,
+    label = '카테고리',
     margin = 0,
-    width = "100%",
-    disabled = false,
-    onChange,
+    border = `1px solid ${color.gray4}`,
     option,
-}: dropDownProps<T>) => {
+    value,
+    onChange,
+    width = '100%',
+}: DropDownProps<T>) => {
     /** 드롭다운을 열고 닫기 위한 state */
     const [isopen, setIsopen] = useState<boolean>(false);
     /** 드롭다운의 값을 관리하기 위한 state */
@@ -46,28 +49,27 @@ export const DropDown = <T extends string>({
     useEffect(() => {
         function handleClickOutside(event: any) {
             // 현재 document에서 mousedown 이벤트가 동작하면 호출되는 함수입니다.
-            if (
-                outsideRef.current &&
-                !outsideRef.current.contains(event.target)
-            ) {
+            if (outsideRef.current && !outsideRef.current.contains(event.target)) {
                 setIsopen(false);
             }
         }
-        document.addEventListener("click", handleClickOutside);
+        document.addEventListener('click', handleClickOutside);
 
         return () => {
-            document.removeEventListener("click", handleClickOutside);
+            document.removeEventListener('click', handleClickOutside);
         };
     }, [outsideRef]);
 
     return (
         <_DropdownWrapper width={width} ref={outsideRef}>
+            <_Label>{label}</_Label>
             <_Selector
                 onClick={() => {
-                    !disabled && setIsopen(!isopen);
+                    setIsopen(!isopen);
                 }}
                 $margin={margin}
-                disabled={disabled}
+                width={width}
+                border={border}
             >
                 {data}
                 <_Img $isopen={isopen}>
@@ -121,23 +123,30 @@ const _DropdownWrapper = styled.div<{ width?: string }>`
     flex-direction: column;
 `;
 
+const _Label = styled.div`
+    font-size: 14px;
+    font-weight: 400;
+    margin: 6px;
+    color: ${color.gray6};
+`;
+
 const _Selector = styled.div<{
-    $margin: CSSProperties["margin"];
-    disabled: boolean;
+    $margin: CSSProperties['margin'];
+    width: string;
+    border: string;
 }>`
     position: relative;
     border-radius: 4px;
-    border: 1px solid ${color.gray4};
-    background: ${({ disabled }) => (disabled ? color.gray3 : color.gray1)};
-    padding: 0px 10px 0px 15px;
-    height: 45px;
+    border: ${({ border }) => border};
+    background: ${color.gray1};
+    padding: 10px 10px 10px 15px;
+    height: 46px;
     width: 100%;
     display: flex;
-    align-items: center;
     z-index: 99;
     font-size: 16px;
     font-weight: 400;
-    cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+    cursor: pointer;
     margin: ${({ $margin }) => $margin};
 `;
 
@@ -167,7 +176,6 @@ const _Item = styled.div<{ width: string }>`
     align-items: center;
     width: ${({ width }) => width};
     height: 45px;
-    padding-bottom: 2px;
     padding-left: 15px;
     color: ${color.gray5};
     z-index: 1;
@@ -182,7 +190,7 @@ const _Img = styled.div<{ $isopen?: boolean }>`
     right: 10px;
     display: flex;
     align-items: center;
-    rotate: ${({ $isopen }) => ($isopen ? "180deg" : "0deg")};
+    rotate: ${({ $isopen }) => ($isopen ? '180deg' : '0deg')};
     transition-duration: 0.5s;
 `;
 
