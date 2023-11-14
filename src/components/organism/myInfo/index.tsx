@@ -1,19 +1,32 @@
 'use client';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { color } from '@/styles/theme';
 import styled from 'styled-components';
 import { Stack } from '@/components/designSystem/common/stack';
 import Image from 'next/image';
 import profile from 'public/assets/svg/profile.svg';
 import { useGetCheck, useGetMyInfo } from '@/apis/user';
-import { SideBar } from '@/components/designSystem/user/sideBar';
+import { SideBar } from '@/components/element/user/sideBar';
 import checkDate from 'public/assets/svg/checkDate.svg';
-import { CheckDate } from '@/apis/user/myInfo';
+import { CheckDate } from '@/apis/user/checkDate';
 
 /** @returns 유저정보 조회 page */
 export default function MyInfoCompo() {
     const { data: myInfoData, isLoading: myInfoIsLoading, isError: myInfoIsError } = useGetMyInfo();
     const { data: checkData } = useGetCheck();
+    const days = ['월', '화', '수', '목', '금', '토', '일'];
+    let time = new Date();
+    let today = time.getDay();
+    let weekList: string[] = [];
+    weekList[0] = days[today - 1];
+
+    for (let i = 1; i <= 6; i++) {
+        today++;
+        if (today > 6) {
+            today = 0;
+            weekList[i] = days[today];
+        } else weekList[i] = days[today];
+    }
 
     const firstData = {
         monday: false,
@@ -26,11 +39,14 @@ export default function MyInfoCompo() {
     };
 
     const checkDataList = Object.values(checkData !== undefined ? checkData : firstData);
-    const days = ['월', '화', '수', '목', '금', '토', '일'];
     const checkList = checkDataList.map((v, i) => {
+        let check = false;
+        if (weekList[0] !== days[i]) check = false;
+        else check = true;
         return {
             day: days[i],
             status: v,
+            check: check,
         };
     });
 
@@ -67,10 +83,9 @@ export default function MyInfoCompo() {
                             <Stack gap={40}>
                                 {checkList.map((v, i) => (
                                     <CheckWrapper key={i}>
-                                        <button
-                                            onClick={() => mutate()}
-                                        >
-                                            <Check v={v.status} src={checkDate} alt="" />
+                                        <button onClick={() => mutate()}>
+                                            <Check v={v.status} b={v.check} src={checkDate} alt="" />
+                                            <DisabledCheck b={v.check} />
                                         </button>
                                         <DayWrapper>{v.day}</DayWrapper>
                                     </CheckWrapper>
@@ -135,16 +150,28 @@ const CheckWrapper = styled.div`
     justify-content: center;
 `;
 
-const Check = styled(Image)<{
-    v: boolean;
-}>`
-    filter: ${(props) => (props.v ? 'grayscale(0)' : 'grayscale(100)')};
-`;
-
 const DayWrapper = styled.div`
     margin-top: 10px;
     display: flex;
     justify-content: center;
     font-size: 18px;
     font-weight: 400;
+`;
+
+const Check = styled(Image)<{
+    v: boolean;
+    b: boolean;
+}>`
+    filter: ${(props) => (props.v ? 'grayscale(0)' : 'grayscale(100)')};
+    display: ${(props) => (props.b ? 'block' : 'none')};
+`;
+
+const DisabledCheck = styled.div<{
+    b: boolean;
+}>`
+    width: 95px;
+    height: 95px;
+    border: 1px solid ${color.gray5};
+    border-radius: 100px;
+    display: ${(props) => (props.b ? 'none' : 'block')};
 `;

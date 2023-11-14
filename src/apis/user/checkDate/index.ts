@@ -4,6 +4,8 @@ import { AxiosError } from 'axios';
 import { instance } from '@/apis/axios';
 import { useRouter } from 'next/navigation';
 
+const BASE_URL = process.env.NEXT_PUBLIC_API_KEY;
+
 /**
  * 출석체크
  * @param 없음
@@ -12,9 +14,9 @@ import { useRouter } from 'next/navigation';
 export const CheckDate = () => {
     const router = useRouter();
 
-    return useMutation(async () => instance.post(`user/check`), {
+    return useMutation(async () => instance.post(`${BASE_URL}/user/check`), {
         onSuccess: () => {
-            router.push('/myInfo');
+            history.go(0);
         },
         onError: (err: AxiosError<AxiosError>) => {
             if (err.response) {

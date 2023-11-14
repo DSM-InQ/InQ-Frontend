@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { instance } from '../axios';
 import { checkResponse, myInfoResponse } from './type';
 
+const BASE_URL = process.env.NEXT_PUBLIC_API_KEY;
 const path = '/user';
 
 /**
@@ -13,7 +14,7 @@ export const useGetMyInfo = () => {
     return useQuery(
         ['getMyInfo'],
         async () => {
-            const { data } = await instance.get<myInfoResponse>(`http://43.200.116.136:8080${path}/profile`);
+            const { data } = await instance.get<myInfoResponse>(`${BASE_URL}${path}/profile`);
             return data;
         },
         {
@@ -31,7 +32,7 @@ export const useGetCheck = () => {
     return useQuery(
         ['getCheck'],
         async () => {
-            const { data } = await instance.get<checkResponse>(`${path}/check`);
+            const { data } = await instance.get<checkResponse>(`${BASE_URL}${path}/check`);
             return data;
         },
         {
