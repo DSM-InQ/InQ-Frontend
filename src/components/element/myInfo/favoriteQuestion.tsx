@@ -13,6 +13,7 @@ export const FavoriteQuestion = () => {
     const {
         data: myQuestionList,
         fetchNextPage: myQuestionFetchNextPage,
+        refetch: myQuestionRefetch,
         isFetching: myQuestionIsFetching,
     } = useGetFavoriteQuestion();
     const [sortType, setSortType] = useState<boolean>(true);
@@ -48,7 +49,12 @@ export const FavoriteQuestion = () => {
                 .map((item, i) => {
                     return (
                         item !== undefined && (
-                            <QuestionBox key={i} data={item} width="100%" />
+                            <QuestionBox
+                                key={i}
+                                data={item}
+                                refetch={myQuestionRefetch}
+                                width="100%"
+                            />
                         )
                     );
                 })}

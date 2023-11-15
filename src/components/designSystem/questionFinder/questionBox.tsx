@@ -16,23 +16,22 @@ import { useQuestionFavorite, useQuestionSetFavorite } from "@/apis/question";
 interface propsType {
     width?: string;
     data: questionListType;
+    refetch: () => void;
 }
 
 /**
  * @param data 질문 / 질문세트 객체
  * @returns 질문 박스 components
  */
-export const QuestionBox = ({ width = "790px", data }: propsType) => {
+export const QuestionBox = ({ width = "790px", data, refetch }: propsType) => {
     /** 라우팅을 위한 routor 생성 */
     const router = useRouter();
-    /** 즐겨찾기 관리를 위한 store */
-    const [favorite, setFavorite] = useState<boolean>(data?.is_favorite);
 
     /** 질문세트 즐겨찾기 요청 api입니다. */
     const { mutate: questionSetMutate, isLoading: questionSetIsLoading } =
         useQuestionSetFavorite(data?.question_set_id, {
             onSuccess: () => {
-                setFavorite((prev) => !prev);
+                refetch();
             },
             onError: () => {
                 alert("즐겨찾기에 실패하였습니다.");
@@ -43,7 +42,7 @@ export const QuestionBox = ({ width = "790px", data }: propsType) => {
     const { mutate: questionMutate, isLoading: questionIsLoading } =
         useQuestionFavorite(data?.question_id, {
             onSuccess: () => {
-                setFavorite((prev) => !prev);
+                refetch();
             },
             onError: () => {
                 alert("즐겨찾기에 실패하였습니다.");
@@ -82,7 +81,7 @@ export const QuestionBox = ({ width = "790px", data }: propsType) => {
                         </>
                     )}
                     <FavoriteImg
-                        src={favorite ? star : emptystar}
+                        src={data?.is_favorite ? star : emptystar}
                         alt=""
                         $isLoading={questionSetIsLoading || questionIsLoading}
                         onClick={(e: React.MouseEvent) => {
@@ -97,10 +96,16 @@ export const QuestionBox = ({ width = "790px", data }: propsType) => {
                 </Stack>
             </Stack>
             <Stack gap={8} align="center">
-                <TitleText>
+                <TitleText
+                    style={{
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                        wordBreak: "break-all",
+                    }}
+                >
                     {data?.question ? data?.question : data?.question_set_name}
                 </TitleText>
-                {data?.is_favorite && <Image src={star} alt="" />}
             </Stack>
             <Stack justify="space-between">
                 <UserText>{`${data?.username} · ${data?.job} ${data?.job_duration}년차`}</UserText>

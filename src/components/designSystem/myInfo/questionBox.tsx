@@ -1,35 +1,31 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import thumbs from "public/assets/svg/thumbs.svg";
 import star from "public/assets/svg/star.svg";
 import emptystar from "public/assets/svg/emptyStar.svg";
-import user from "public/assets/svg/user.svg";
 import Image from "next/image";
 import { color } from "@/styles/theme";
 import { Stack } from "../common/stack";
-import { myQuestionType, solvedQuestionType } from "@/apis/user/type";
+import { myQuestionType } from "@/apis/user/type";
 import { getValueByKey } from "@/utils/useGetPropertyKey";
 import { categoryType } from "@/utils/Translation";
 import { Text } from "@/components/designSystem/common/text";
-import { useQuestionFavorite, useQuestionSetFavorite } from "@/apis/question";
+import { useQuestionFavorite } from "@/apis/question";
 
 interface propsType {
     data: myQuestionType;
+    refetch: () => void;
 }
 
 /**
  * @param data 질문 / 질문세트 객체
  * @returns 질문 박스 components
  */
-export const QuestionBox = ({ data }: propsType) => {
-    /** 즐겨찾기 관리를 위한 store */
-    const [favorite, setFavorite] = useState<boolean>(data?.is_favorite);
-
+export const QuestionBox = ({ data, refetch }: propsType) => {
     /** 질문 즐겨찾기 요청 api입니다. */
     const { mutate: questionMutate, isLoading: questionIsLoading } =
         useQuestionFavorite(data?.question_id, {
             onSuccess: () => {
-                setFavorite((prev) => !prev);
+                refetch();
             },
             onError: () => {
                 alert("즐겨찾기에 실패하였습니다.");
@@ -48,7 +44,7 @@ export const QuestionBox = ({ data }: propsType) => {
                         {data?.created_at.slice(11, 16)}
                     </DateText>
                     <FavoriteImg
-                        src={favorite ? star : emptystar}
+                        src={data?.is_favorite ? star : emptystar}
                         alt=""
                         $isLoading={questionIsLoading}
                         onClick={(e: React.MouseEvent) => {

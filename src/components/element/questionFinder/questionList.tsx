@@ -191,7 +191,11 @@ export default function QuestionList() {
                 {questionOrQuestionSetData()?.map((item, i) => {
                     return (
                         item !== undefined && (
-                            <QuestionBox key={i} data={item} />
+                            <QuestionBox
+                                key={i}
+                                data={item}
+                                refetch={saveQuestion}
+                            />
                         )
                     );
                 })}

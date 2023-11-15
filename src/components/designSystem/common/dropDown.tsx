@@ -5,7 +5,6 @@ import chevron from "public/assets/svg/chevron.svg";
 import { color } from "@/styles/theme";
 
 interface DropDownProps<T> {
-    label?: string;
     value?: T;
     margin?: CSSProperties["margin"];
     border?: CSSProperties["border"];
@@ -15,7 +14,6 @@ interface DropDownProps<T> {
 }
 
 /**
- * @param label label string으로 넣으면 됨
  * @param margin 문자열로 넣으면 됨 ex) '10px' ex) '10px 10px'
  * @param border 문자열로 넣으면 됨 ex) `1px solid ${color.gray4}`
  * @param option 선택지 배열로 넣으면 됨
@@ -25,7 +23,6 @@ interface DropDownProps<T> {
  * @returns 드롭다운 components
  */
 export const DropDown = <T extends string>({
-    label = "카테고리",
     margin = 0,
     border = `1px solid ${color.gray4}`,
     option,
@@ -65,7 +62,6 @@ export const DropDown = <T extends string>({
 
     return (
         <_DropdownWrapper width={width} ref={outsideRef}>
-            <_Label>{label}</_Label>
             <_Selector
                 onClick={() => {
                     setIsopen(!isopen);
@@ -124,13 +120,6 @@ const _DropdownWrapper = styled.div<{ width?: string }>`
     width: ${({ width }) => width};
     display: flex;
     flex-direction: column;
-`;
-
-const _Label = styled.div`
-    font-size: 14px;
-    font-weight: 400;
-    margin: 6px;
-    color: ${color.gray6};
 `;
 
 const _Selector = styled.div<{

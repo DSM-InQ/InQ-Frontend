@@ -10,7 +10,7 @@ import { Text } from "@/components/designSystem/common/text";
 import { QuestionBox } from "@/components/designSystem/myInfo/questionBox";
 
 export const MyQuestion = () => {
-    const { data: myQuestionList } = useGetMyQuestion();
+    const { data: myQuestionList, refetch } = useGetMyQuestion();
     const [sortType, setSortType] = useState<boolean>(true);
 
     return (
@@ -44,7 +44,11 @@ export const MyQuestion = () => {
                 .map((item, i) => {
                     return (
                         item !== undefined && (
-                            <QuestionBox key={i} data={item} />
+                            <QuestionBox
+                                key={i}
+                                data={item}
+                                refetch={refetch}
+                            />
                         )
                     );
                 })}
