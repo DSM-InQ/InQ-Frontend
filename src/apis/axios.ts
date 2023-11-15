@@ -14,6 +14,7 @@ instance.interceptors.request.use(
         const returnConfig = { ...config };
         if (accessToken) {
             returnConfig.headers!["Authorization"] = `Bearer ${accessToken}`;
+            returnConfig.headers!["X-Not-Using-Xquare-Auth"] = true;
         }
         return returnConfig;
     },
@@ -28,7 +29,7 @@ instance.interceptors.response.use(
             if (
                 error.response.data.message === "Invalid Token" ||
                 error.response.data.message === "Token Expired" ||
-                error.response.data.message === "Unexpected token" ||
+                error.response.data.status === 401 ||
                 !getCookie("access_token")
             ) {
                 deleteCookie("access_token");

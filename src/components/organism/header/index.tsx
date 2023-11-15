@@ -53,7 +53,12 @@ export default function Header() {
                     >
                         로그아웃
                     </Text>
-                    <Image src={personImg} alt="" />
+                    <Image
+                        src={personImg}
+                        alt=""
+                        style={{ cursor: "pointer" }}
+                        onClick={() => router.push("/myInfo")}
+                    />
                 </Stack>
             </Container>
             <Spacer />

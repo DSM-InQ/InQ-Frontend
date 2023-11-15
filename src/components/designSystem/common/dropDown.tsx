@@ -1,14 +1,14 @@
-import Image from 'next/image';
-import React, { useEffect, useRef, useState } from 'react';
-import styled, { CSSProperties } from 'styled-components';
-import chevron from 'public/assets/svg/chevron.svg';
-import { color } from '@/styles/theme';
+import Image from "next/image";
+import React, { useEffect, useRef, useState } from "react";
+import styled, { CSSProperties } from "styled-components";
+import chevron from "public/assets/svg/chevron.svg";
+import { color } from "@/styles/theme";
 
 interface DropDownProps<T> {
     label?: string;
     value?: T;
-    margin?: CSSProperties['margin'];
-    border?: string;
+    margin?: CSSProperties["margin"];
+    border?: CSSProperties["border"];
     width?: string;
     onChange: (value: T) => void;
     option: T[];
@@ -25,13 +25,13 @@ interface DropDownProps<T> {
  * @returns 드롭다운 components
  */
 export const DropDown = <T extends string>({
-    label = '카테고리',
+    label = "카테고리",
     margin = 0,
     border = `1px solid ${color.gray4}`,
     option,
     value,
     onChange,
-    width = '100%',
+    width = "100%",
 }: DropDownProps<T>) => {
     /** 드롭다운을 열고 닫기 위한 state */
     const [isopen, setIsopen] = useState<boolean>(false);
@@ -49,14 +49,17 @@ export const DropDown = <T extends string>({
     useEffect(() => {
         function handleClickOutside(event: any) {
             // 현재 document에서 mousedown 이벤트가 동작하면 호출되는 함수입니다.
-            if (outsideRef.current && !outsideRef.current.contains(event.target)) {
+            if (
+                outsideRef.current &&
+                !outsideRef.current.contains(event.target)
+            ) {
                 setIsopen(false);
             }
         }
-        document.addEventListener('click', handleClickOutside);
+        document.addEventListener("click", handleClickOutside);
 
         return () => {
-            document.removeEventListener('click', handleClickOutside);
+            document.removeEventListener("click", handleClickOutside);
         };
     }, [outsideRef]);
 
@@ -131,9 +134,9 @@ const _Label = styled.div`
 `;
 
 const _Selector = styled.div<{
-    $margin: CSSProperties['margin'];
+    $margin: CSSProperties["margin"];
     width: string;
-    border: string;
+    border: CSSProperties["border"];
 }>`
     position: relative;
     border-radius: 4px;
@@ -190,7 +193,7 @@ const _Img = styled.div<{ $isopen?: boolean }>`
     right: 10px;
     display: flex;
     align-items: center;
-    rotate: ${({ $isopen }) => ($isopen ? '180deg' : '0deg')};
+    rotate: ${({ $isopen }) => ($isopen ? "180deg" : "0deg")};
     transition-duration: 0.5s;
 `;
 

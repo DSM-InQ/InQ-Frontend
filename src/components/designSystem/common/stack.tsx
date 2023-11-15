@@ -4,6 +4,7 @@ import styled, { CSSProperties } from "styled-components";
 interface propsType {
     width?: string;
     height?: number;
+    display?: CSSProperties["display"];
     direction?: CSSProperties["flexDirection"];
     align?: CSSProperties["alignItems"];
     justify?: CSSProperties["justifyContent"];
@@ -20,6 +21,7 @@ interface propsType {
 interface stylePropsType {
     width?: string;
     height?: number;
+    display?: CSSProperties["display"];
     direction?: CSSProperties["flexDirection"];
     $align?: CSSProperties["alignItems"];
     $justify?: CSSProperties["justifyContent"];
@@ -35,6 +37,7 @@ interface stylePropsType {
 /**
  * @param width string으로 넣으면 됨 ex) '100%'
  * @param height string으로 넣으면 됨 ex) '100%'
+ * @param display display 넣듯이 string으로 넣으면 됨
  * @param direction flex-direction 넣듯이 string으로 넣으면 됨
  * @param align align-items 넣듯이 string으로 넣으면 됨
  * @param justify justify-content 넣듯이 string으로 넣으면 됨
@@ -51,6 +54,7 @@ interface stylePropsType {
 export const Stack = ({
     width,
     height,
+    display = "flex",
     direction,
     align,
     justify,
@@ -67,6 +71,7 @@ export const Stack = ({
         <Container
             width={width}
             height={height}
+            display={display}
             direction={direction}
             $align={align}
             $justify={justify}
@@ -87,7 +92,7 @@ const Container = styled.div<stylePropsType>`
     position: ${({ $position }) => $position};
     width: ${({ width }) => width};
     height: ${({ height }) => height}px;
-    display: flex;
+    display: ${({ display }) => display};
     flex-direction: ${({ direction }) => direction};
     align-items: ${({ $align }) => $align};
     justify-content: ${({ $justify }) => $justify};

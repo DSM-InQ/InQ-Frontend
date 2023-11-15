@@ -14,15 +14,14 @@ import { useRouter } from "next/navigation";
 import { useQuestionFavorite, useQuestionSetFavorite } from "@/apis/question";
 
 interface propsType {
-    width?: string;
     data: questionListType;
 }
 
 /**
- * @param data 질문 / 질문세트 객체
- * @returns 질문 박스 components
+ * @param data 질문세트 객체
+ * @returns 질문 세트 박스 components
  */
-export const QuestionBox = ({ width = "790px", data }: propsType) => {
+export const QuestionSetBox = ({ data }: propsType) => {
     /** 라우팅을 위한 routor 생성 */
     const router = useRouter();
     /** 즐겨찾기 관리를 위한 store */
@@ -38,36 +37,21 @@ export const QuestionBox = ({ width = "790px", data }: propsType) => {
                 alert("즐겨찾기에 실패하였습니다.");
             },
         });
-
-    /** 질문 즐겨찾기 요청 api입니다. */
-    const { mutate: questionMutate, isLoading: questionIsLoading } =
-        useQuestionFavorite(data?.question_id, {
-            onSuccess: () => {
-                setFavorite((prev) => !prev);
-            },
-            onError: () => {
-                alert("즐겨찾기에 실패하였습니다.");
-            },
-        });
     return (
         <Container
-            style={{ width: width }}
             onClick={() => {
                 !!data?.question_set_id &&
                     router.push(`/${data?.question_set_id}`);
             }}
         >
             <Stack justify="space-between" align="center">
-                <CategoryText>{`${
-                    data?.question_id ? "질문" : "질문세트"
-                } : ${getValueByKey(
-                    categoryType,
-                    data?.category
-                )}`}</CategoryText>
+                <CategoryText>
+                    {getValueByKey(categoryType, data?.category)}
+                </CategoryText>
                 <Stack gap={6} align="center">
                     <DateText>
-                        {data?.created_at?.slice(0, 10)}{" "}
-                        {data?.created_at?.slice(11, 16)}
+                        {data?.created_at.slice(0, 10)}{" "}
+                        {data?.created_at.slice(11, 16)}
                     </DateText>
                     {data?.like_count !== undefined && (
                         <>
@@ -84,14 +68,10 @@ export const QuestionBox = ({ width = "790px", data }: propsType) => {
                     <FavoriteImg
                         src={favorite ? star : emptystar}
                         alt=""
-                        $isLoading={questionSetIsLoading || questionIsLoading}
+                        $isLoading={questionSetIsLoading}
                         onClick={(e: React.MouseEvent) => {
                             e.stopPropagation();
-                            if (data?.question_set_id) {
-                                !questionSetIsLoading && questionSetMutate();
-                            } else {
-                                !questionIsLoading && questionMutate();
-                            }
+                            !questionSetIsLoading && questionSetMutate();
                         }}
                     ></FavoriteImg>
                 </Stack>
@@ -105,7 +85,7 @@ export const QuestionBox = ({ width = "790px", data }: propsType) => {
             <Stack justify="space-between">
                 <UserText>{`${data?.username} · ${data?.job} ${data?.job_duration}년차`}</UserText>
                 <Stack gap={4} margin={"0 -4px 0 0"}>
-                    {data?.tags?.map((item, i) => (
+                    {data?.tags.map((item, i) => (
                         <Tag key={i}># {item}</Tag>
                     ))}
                 </Stack>
@@ -118,6 +98,7 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
+    width: 100%;
     height: 148px;
     gap: 12px;
     border-radius: 8px;

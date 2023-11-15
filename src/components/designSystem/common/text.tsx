@@ -1,7 +1,7 @@
-import React, { CSSProperties, ReactNode } from "react";
+import React, { CSSProperties, HTMLAttributes, ReactNode } from "react";
 import styled from "styled-components";
 
-interface propsType {
+interface propsType extends HTMLAttributes<HTMLDivElement> {
     size?: number;
     weight?: number;
     color?: string;

@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import closeEye from "public/assets/svg/closeEye.svg";
 import openEye from "public/assets/svg/openEye.svg";
-import { Login } from "@/apis/login";
+import { Login } from "@/apis/user";
 import { CheckBox, Input } from "@/components/designSystem/common/input";
 import Button from "@/components/designSystem/common/button";
 import { Stack } from "@/components/designSystem/common/stack";

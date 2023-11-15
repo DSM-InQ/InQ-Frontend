@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { Input } from "@/components/designSystem/common/input";
 import { Stack } from "@/components/designSystem/common/stack";
 import Button from "@/components/designSystem/common/button";
-import { Signup } from "@/apis/signup";
+import { Signup } from "@/apis/user";
 import closeEye from "public/assets/svg/closeEye.svg";
 import openEye from "public/assets/svg/openEye.svg";
 

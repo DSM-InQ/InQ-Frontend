@@ -1,16 +1,16 @@
-'use client';
-import React, { useState } from 'react';
-import { useForm } from '@/hooks/useForm';
-import styled from 'styled-components';
-import { color } from '@/styles/theme';
-import { Input } from '@/components/designSystem/common/input';
-import { Textarea } from '@/components/designSystem/register/textarea';
-import { Stack } from '@/components/designSystem/common/stack';
-import { DropDown } from '@/components/designSystem/common/dropDown';
-import { useGetTag } from '@/apis/question';
-import Tag from '@/components/designSystem/register/tag';
-import { RegisterQuestion } from '@/apis/registerQuestion';
-import Button from '@/components/designSystem/common/button';
+"use client";
+import React, { useState } from "react";
+import { useForm } from "@/hooks/useForm";
+import styled from "styled-components";
+import { color } from "@/styles/theme";
+import { Input } from "@/components/designSystem/common/input";
+import { Textarea } from "@/components/designSystem/register/textarea";
+import { Stack } from "@/components/designSystem/common/stack";
+import { DropDown } from "@/components/designSystem/common/dropDown";
+import { useGetTag } from "@/apis/question";
+import Tag from "@/components/designSystem/register/tag";
+import { RegisterQuestion } from "@/apis/question";
+import Button from "@/components/designSystem/common/button";
 
 /** @returns 질문 등록 page */
 export default function RegisterQuestionCompo() {
@@ -22,23 +22,23 @@ export default function RegisterQuestionCompo() {
         setForm: setSignForm,
         handleChange: signFormChange,
     } = useForm({
-        category: 'DEVELOPMENT',
-        question: '',
-        answer: '',
-        tag: '',
+        category: "DEVELOPMENT",
+        question: "",
+        answer: "",
+        tag: "",
         tags: [],
     });
     /** 질문 등록 data를 구조분해할당 해놓은 부분 */
     const { category, question, answer, tag, tags } = signForm;
     /** 카테고리 data */
     const options = [
-        'DEVELOPMENT', // 개발
-        'MARKETING', // 마케팅
-        'PLANNING', // 기획
-        'COMMON_SENSE', // 상식
-        'LEARNING', // 학습
-        'CAREER', // 경력
-        'PERSONALITY', // 인성
+        "DEVELOPMENT", // 개발
+        "MARKETING", // 마케팅
+        "PLANNING", // 기획
+        "COMMON_SENSE", // 상식
+        "LEARNING", // 학습
+        "CAREER", // 경력
+        "PERSONALITY", // 인성
     ];
 
     /** 태그 추가하는 함수 */
@@ -64,7 +64,7 @@ export default function RegisterQuestionCompo() {
 
     /** 면접 예상 시간 계산하는 함수 */
     const TimeCalculation = () => {
-        setTime(~~(answer.replace(/ /gi, '').length / 6 / 60));
+        setTime(~~(answer.replace(/ /gi, "").length / 6 / 60));
     };
 
     /** 질문 등록 api 호출 */
@@ -98,7 +98,10 @@ export default function RegisterQuestionCompo() {
                                     name="tag"
                                     value={tag}
                                     onKeyDown={(e) => {
-                                        if (!e.nativeEvent.isComposing && e.key === 'Enter') {
+                                        if (
+                                            !e.nativeEvent.isComposing &&
+                                            e.key === "Enter"
+                                        ) {
                                             AddTag();
                                         }
                                     }}

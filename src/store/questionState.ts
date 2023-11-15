@@ -65,3 +65,33 @@ export const useFilter = create<filterState>()(
             })),
     }))
 );
+
+export type sideBarType =
+    | "myInfo"
+    | "myInfoChange"
+    | "answerHistory"
+    | "myQuestion"
+    | "mySet"
+    | "myFavoriteQuestion"
+    | "myFavoriteSet";
+
+interface myInfoSideBarState {
+    sideBarType:
+        | "myInfo"
+        | "myInfoChange"
+        | "answerHistory"
+        | "myQuestion"
+        | "mySet"
+        | "myFavoriteQuestion"
+        | "myFavoriteSet"
+        | string;
+    setSideBarType: (type: string) => void;
+}
+
+/** 마이페이지 sideBar state */
+export const useMyInfoSideBar = create<myInfoSideBarState>()(
+    devtools((set) => ({
+        sideBarType: "myInfo",
+        setSideBarType: (type) => set({ sideBarType: type }),
+    }))
+);

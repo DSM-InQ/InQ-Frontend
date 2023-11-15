@@ -5,17 +5,11 @@ import { color } from '@/styles/theme';
 
 interface inputPropsType extends InputHTMLAttributes<HTMLInputElement> {
     width?: string;
-    placeholder?: string;
-    disabled?: boolean;
     icon?: string;
     iconClick?: () => void;
     label?: string;
     margin?: CSSProperties['margin'];
     isError?: boolean;
-    name?: string;
-    value?: string | number;
-    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
     onForm?: () => void;
 }
 
