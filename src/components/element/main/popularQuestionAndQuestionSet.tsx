@@ -1,15 +1,9 @@
 "use client";
 import { color } from "@/styles/theme";
-import quote from "public/assets/svg/quote.svg";
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
-import Image from "next/image";
 import { Text } from "@/components/designSystem/common/text";
-import {
-    useGetPopularQuestion,
-    useGetPopularQuestionSet,
-    useGetQuestionOfTheDay,
-} from "@/apis/question";
+import { useGetPopularQuestion, useGetQuestionSetRank } from "@/apis/question";
 import PopularQuestionBox from "@/components/designSystem/main/popularQuestionBox";
 import { Stack } from "@/components/designSystem/common/stack";
 import PopularQuestionSetBox from "@/components/designSystem/main/popularQuestionSetBox";
@@ -19,7 +13,11 @@ import { useRouter } from "next/navigation";
 export default function PopularQuestionAndQuestionSet() {
     const router = useRouter();
     const { data: popularQuestion } = useGetPopularQuestion();
-    const { data: popularQuestionSet } = useGetPopularQuestionSet();
+    const { data: popularQuestionSet, refetch } = useGetQuestionSetRank();
+    useEffect(() => {
+        refetch();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     return (
         <Container>
             <Stack gap={19}>
@@ -45,8 +43,8 @@ export default function PopularQuestionAndQuestionSet() {
                         인기 질문 세트
                     </Text>
                     <Stack direction="column" gap={20}>
-                        {popularQuestionSet?.question_sets_list
-                            .slice(0, 2)
+                        {popularQuestionSet?.pages[0].question_sets_list
+                            ?.slice(0, 2)
                             .map((item, i) => {
                                 return (
                                     <PopularQuestionSetBox
