@@ -180,7 +180,7 @@ export const useGetPopularQuestion = () => {
 export const useGetPopularQuestionSet = () => {
     return useQuery(["getPopularQuestionSet"], async () => {
         const { data } = await instance.get<questionSetResponse>(
-            `${path}/set/popular`
+            `${path}/set/rank?page=0`
         );
         return data;
     });

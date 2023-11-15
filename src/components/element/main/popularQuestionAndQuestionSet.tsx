@@ -3,7 +3,10 @@ import { color } from "@/styles/theme";
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import { Text } from "@/components/designSystem/common/text";
-import { useGetPopularQuestion, useGetQuestionSetRank } from "@/apis/question";
+import {
+    useGetPopularQuestion,
+    useGetPopularQuestionSet,
+} from "@/apis/question";
 import PopularQuestionBox from "@/components/designSystem/main/popularQuestionBox";
 import { Stack } from "@/components/designSystem/common/stack";
 import PopularQuestionSetBox from "@/components/designSystem/main/popularQuestionSetBox";
@@ -13,11 +16,7 @@ import { useRouter } from "next/navigation";
 export default function PopularQuestionAndQuestionSet() {
     const router = useRouter();
     const { data: popularQuestion } = useGetPopularQuestion();
-    const { data: popularQuestionSet, refetch } = useGetQuestionSetRank();
-    useEffect(() => {
-        refetch();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    const { data: popularQuestionSet } = useGetPopularQuestionSet();
     return (
         <Container>
             <Stack gap={19}>
@@ -43,7 +42,7 @@ export default function PopularQuestionAndQuestionSet() {
                         인기 질문 세트
                     </Text>
                     <Stack direction="column" gap={20}>
-                        {popularQuestionSet?.pages[0].question_sets_list
+                        {popularQuestionSet?.question_sets_list
                             ?.slice(0, 2)
                             .map((item, i) => {
                                 return (
