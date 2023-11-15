@@ -1,4 +1,8 @@
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import {
+    useInfiniteQuery,
+    useQuery,
+    useQueryClient,
+} from "@tanstack/react-query";
 import { instance } from "../axios";
 import {
     checkResponse,
@@ -160,10 +164,12 @@ export const MyInfoChange = (myInfoChangeData: myInfoChangeDataTyp) => {
  * @returns checkDate api 호출 성공/실패 여부
  */
 export const CheckDate = () => {
+    const queryClient = useQueryClient();
     return useMutation(async () => instance.post(`${path}/check`), {
         onSuccess: () => {
+            queryClient.invalidateQueries(["getMyInfo"]);
+            queryClient.invalidateQueries(["getCheck"]);
             alert("출석체크가 완료되었습니다!");
-            history.go(0);
         },
         onError: (err: AxiosError<AxiosError>) => {
             if (err.response) {
