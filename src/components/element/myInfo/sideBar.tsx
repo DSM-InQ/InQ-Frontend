@@ -80,6 +80,7 @@ const BtnWrapper = styled.button<{ checked: boolean }>`
     border-radius: 50px;
     font-size: 18px;
     font-weight: 600;
+    cursor: pointer;
     &:hover {
         background-color: ${color.primaryDefault};
         border: none;

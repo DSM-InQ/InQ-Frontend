@@ -162,6 +162,7 @@ export const MyInfoChange = (myInfoChangeData: myInfoChangeDataTyp) => {
 export const CheckDate = () => {
     return useMutation(async () => instance.post(`${path}/check`), {
         onSuccess: () => {
+            alert("출석체크가 완료되었습니다!");
             history.go(0);
         },
         onError: (err: AxiosError<AxiosError>) => {

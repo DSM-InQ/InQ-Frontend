@@ -11,6 +11,7 @@ import { Text } from "@/components/designSystem/common/text";
 import { CheckDate } from "@/apis/user";
 
 export const Info = () => {
+    const today = new Date().getDay();
     const {
         data: myInfoData,
         isLoading: myInfoIsLoading,
@@ -19,19 +20,19 @@ export const Info = () => {
     const { data: checkData } = useGetCheck();
 
     const firstData = {
+        sunday: false,
         monday: false,
         tuesday: false,
         wednesday: false,
         thursday: false,
         friday: false,
         saturday: false,
-        sunday: false,
     };
 
     const checkDataList = Object.values(
         checkData !== undefined ? checkData : firstData
     );
-    const days = ["월", "화", "수", "목", "금", "토", "일"];
+    const days = ["일", "월", "화", "수", "목", "금", "토"];
     const checkList = checkDataList.map((v, i) => {
         return {
             day: days[i],
@@ -94,13 +95,24 @@ export const Info = () => {
                                 direction="column"
                                 justify="center"
                             >
-                                <button onClick={() => mutate()}>
+                                {v.status || today === i ? (
                                     <Check
                                         src={checkDate}
                                         alt=""
                                         v={v.status}
+                                        style={{
+                                            cursor:
+                                                today === i
+                                                    ? "pointer"
+                                                    : "not-allowed",
+                                        }}
+                                        onClick={() =>
+                                            today === i && !v.status && mutate()
+                                        }
                                     />
-                                </button>
+                                ) : (
+                                    <CircleBtn />
+                                )}
                                 <DayWrapper>{v.day}</DayWrapper>
                             </Stack>
                         ))}
@@ -137,4 +149,14 @@ const DayWrapper = styled.div`
     justify-content: center;
     font-size: 18px;
     font-weight: 400;
+`;
+
+const CircleBtn = styled.button`
+    width: 92px;
+    height: 92px;
+    border: 3px solid ${color.gray5};
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `;

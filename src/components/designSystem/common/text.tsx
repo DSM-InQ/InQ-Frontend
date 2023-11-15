@@ -29,6 +29,7 @@ export const Text = ({
     onClick,
     cursor,
     children,
+    style,
 }: propsType) => {
     return (
         <TextStyle
@@ -38,6 +39,7 @@ export const Text = ({
             $margin={margin}
             onClick={onClick}
             $cursor={cursor}
+            style={style}
         >
             {children}
         </TextStyle>

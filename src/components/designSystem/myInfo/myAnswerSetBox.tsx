@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import backImg from "public/assets/svg/backImg.svg";
+import viewImg from "public/assets/svg/viewImg.svg";
 import { color } from "@/styles/theme";
 import { solvedQuestionListType } from "@/apis/user/type";
 import { Stack } from "../common/stack";
 import { Text } from "@/components/designSystem/common/text";
+import Image from "next/image";
+import { MyAnswerBox } from "./myAnswerBox";
 
 interface propsType {
     data: solvedQuestionListType;
@@ -15,6 +17,7 @@ interface propsType {
  * @returns 답변한 질문 세트 박스 components
  */
 export const MyAnswerSetBox = ({ data }: propsType) => {
+    const [view, setView] = useState(false);
     return (
         <Container>
             <Stack justify="space-between" align="center">
@@ -27,12 +30,28 @@ export const MyAnswerSetBox = ({ data }: propsType) => {
                 </Stack>
             </Stack>
             <Stack gap={8} align="center">
-                <TitleText size={20}>{data?.question_set_name}</TitleText>
+                <Text size={20}>{data?.question_set_name}</Text>
             </Stack>
-            <button>
-                더보기
-                {/* <svg href={backImg} width="10" height="10" fill="#374957" /> */}
-            </button>
+            <Stack>
+                <ViewBtn onClick={() => setView((prev) => !prev)}>
+                    {view ? "접기" : "더보기"}
+                    <Image
+                        src={viewImg}
+                        alt=""
+                        width="10"
+                        height="10"
+                        style={{
+                            marginLeft: "10px",
+                            rotate: view ? "0deg" : "90deg",
+                            transition: "0.45s",
+                        }}
+                    />
+                </ViewBtn>
+            </Stack>
+            {view &&
+                data?.question_list.map((item) => {
+                    return <MyAnswerBox key={item.question_id} data={item} />;
+                })}
         </Container>
     );
 };
@@ -64,4 +83,9 @@ const DateText = styled.div`
     margin: 2px 4px 0 0;
 `;
 
-const TitleText = styled(Text)``;
+const ViewBtn = styled.button`
+    color: #555;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+`;

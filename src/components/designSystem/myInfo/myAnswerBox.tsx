@@ -29,15 +29,8 @@ export const MyAnswerBox = ({ data }: propsType) => {
                     </DateText>
                 </Stack>
             </Stack>
-            <Stack gap={8} align="center">
+            <Stack gap={8} justify="space-between" align="center">
                 <TitleText>{data?.question}</TitleText>
-            </Stack>
-            <Stack justify="flex-end">
-                <Stack gap={4} margin={"0 -4px 0 0"}>
-                    {data?.tags.map((item, i) => (
-                        <Tag key={i}># {item}</Tag>
-                    ))}
-                </Stack>
             </Stack>
             <Text
                 size={18}
