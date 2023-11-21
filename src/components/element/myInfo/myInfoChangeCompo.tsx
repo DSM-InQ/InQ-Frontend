@@ -4,7 +4,7 @@ import { color } from "@/styles/theme";
 import styled from "styled-components";
 import { Stack } from "@/components/designSystem/common/stack";
 import { useForm } from "@/hooks/useForm";
-import { MyInfoChange } from "@/apis/user";
+import { useMyInfoChange } from "@/apis/user";
 import { Input } from "@/components/designSystem/common/input";
 import Button from "@/components/designSystem/common/button";
 
@@ -20,7 +20,7 @@ export default function MyInfoChangeCompo() {
     const { username, job, job_duration } = signForm;
 
     /** 유저정보 수정 api 호출 */
-    const { mutate } = MyInfoChange(signForm);
+    const { mutate } = useMyInfoChange(signForm);
 
     return (
         <Container>

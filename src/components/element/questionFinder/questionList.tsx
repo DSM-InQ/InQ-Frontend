@@ -1,25 +1,16 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import { QuestionBox } from "@/components/designSystem/questionFinder/questionBox";
-import styled, { css } from "styled-components";
-import { Stack } from "@/components/designSystem/common/stack";
-import { color } from "@/styles/theme";
-import Image from "next/image";
-import search from "public/assets/svg/search.svg";
-import sort from "public/assets/svg/sort.svg";
-import { DropDown } from "@/components/designSystem/common/dropDown";
-import {
-    useGetQuestionList,
-    useGetQuestionRank,
-    useGetQuestionSetList,
-    useGetQuestionSetRank,
-} from "@/apis/question";
-import {
-    useCategoryState,
-    useFilter,
-    useTagState,
-} from "@/store/questionState";
-import { useDebounce } from "@/utils/useDebounce";
+'use client';
+import React, { useEffect, useState } from 'react';
+import { QuestionBox } from '@/components/designSystem/questionFinder/questionBox';
+import styled, { css } from 'styled-components';
+import { Stack } from '@/components/designSystem/common/stack';
+import { color } from '@/styles/theme';
+import Image from 'next/image';
+import search from 'public/assets/svg/search.svg';
+import sort from 'public/assets/svg/sort.svg';
+import { DropDown } from '@/components/designSystem/common/dropDown';
+import { useGetQuestionList, useGetQuestionRank, useGetSetList, useGetSetRank } from '@/apis/question';
+import { useCategoryState, useFilter, useTagState } from '@/store/questionState';
+import { useDebounce } from '@/utils/useDebounce';
 
 /** @returns 질문 목록 및 검색 components */
 export default function QuestionList() {
@@ -43,7 +34,7 @@ export default function QuestionList() {
         fetchNextPage: questionSetRankingFetchNextPage,
         refetch: questionSetRankingRefetch,
         isFetching: questionSetRankingIsFetching,
-    } = useGetQuestionSetRank();
+    } = useGetSetRank();
     /** 질문 목록 */
     const {
         data: questionList,
@@ -52,70 +43,52 @@ export default function QuestionList() {
     } = useGetQuestionList(category, tag, filter.keyword);
     /** 질문세트 목록 */
     const {
-        data: questionSetList,
-        fetchNextPage: questionSetListFetchNextPage,
-        refetch: questionSetListRefetch,
-    } = useGetQuestionSetList(category, tag, filter.keyword);
+        data: setList,
+        fetchNextPage: setListFetchNextPage,
+        refetch: setListRefetch,
+    } = useGetSetList(category, tag, filter.keyword);
 
     /** 현재 상태에 따라 새로 값 세팅 */
     const saveQuestion = async (isAdd = false) => {
-        if (filter.questionType === "질문") {
-            if (category === "랭킹") {
-                isAdd
-                    ? questionRankingFetchNextPage()
-                    : questionRankingRefetch();
+        if (filter.questionType === '질문') {
+            if (category === '랭킹') {
+                isAdd ? questionRankingFetchNextPage() : questionRankingRefetch();
             } else {
                 isAdd ? questionListFetchNextPage() : questionListRefetch();
             }
         } else {
-            if (category === "랭킹") {
-                isAdd
-                    ? questionSetRankingFetchNextPage()
-                    : questionSetRankingRefetch();
+            if (category === '랭킹') {
+                isAdd ? questionSetRankingFetchNextPage() : questionSetRankingRefetch();
             } else {
-                isAdd
-                    ? questionSetListFetchNextPage()
-                    : questionSetListRefetch();
+                isAdd ? setListFetchNextPage() : setListRefetch();
             }
         }
     };
 
     /** 현재 상태에 따라 새로 값 세팅 */
     const questionOrQuestionSetData = () => {
-        if (filter.questionType === "질문") {
-            if (category === "랭킹") {
-                return questionRanking?.pages.flatMap(
-                    (prev) => prev.question_list
-                );
+        if (filter.questionType === '질문') {
+            if (category === '랭킹') {
+                return questionRanking?.pages.flatMap((prev) => prev.question_list);
             } else {
                 return questionList?.pages
                     .flatMap((prev) => prev.question_list)
                     .sort(
                         (a, b) =>
-                            new Date(
-                                filter.sortType ? b.created_at : a.created_at
-                            ).getTime() -
-                            new Date(
-                                filter.sortType ? a.created_at : b.created_at
-                            ).getTime()
+                            new Date(filter.sortType ? b.created_at : a.created_at).getTime() -
+                            new Date(filter.sortType ? a.created_at : b.created_at).getTime()
                     );
             }
         } else {
-            if (category === "랭킹") {
-                return questionSetRanking?.pages.flatMap(
-                    (prev) => prev.question_sets_list
-                );
+            if (category === '랭킹') {
+                return questionSetRanking?.pages.flatMap((prev) => prev.question_sets_list);
             } else {
-                return questionSetList?.pages
+                return setList?.pages
                     .flatMap((prev) => prev.question_sets_list)
                     .sort(
                         (a, b) =>
-                            new Date(
-                                filter.sortType ? b.created_at : a.created_at
-                            ).getTime() -
-                            new Date(
-                                filter.sortType ? a.created_at : b.created_at
-                            ).getTime()
+                            new Date(filter.sortType ? b.created_at : a.created_at).getTime() -
+                            new Date(filter.sortType ? a.created_at : b.created_at).getTime()
                     );
             }
         }
@@ -123,17 +96,17 @@ export default function QuestionList() {
 
     /** 다음 페이지가 있는지 확인 */
     const questionOrQuestionNextPage = () => {
-        if (filter.questionType === "질문") {
-            if (category === "랭킹") {
+        if (filter.questionType === '질문') {
+            if (category === '랭킹') {
                 return questionRanking?.pages.at(-1)?.has_next!;
             } else {
                 return questionList?.pages.at(-1)?.has_next!;
             }
         } else {
-            if (category === "랭킹") {
+            if (category === '랭킹') {
                 return questionSetRanking?.pages.at(-1)?.has_next!;
             } else {
-                return questionSetList?.pages.at(-1)?.has_next!;
+                return setList?.pages.at(-1)?.has_next!;
             }
         }
     };
@@ -163,53 +136,35 @@ export default function QuestionList() {
                             value={filter.keyword}
                             name="keyword"
                             onChange={setForm}
-                            disabled={category === "랭킹"}
+                            disabled={category === '랭킹'}
                         />
                         <SearchImage src={search} alt="" />
                     </InputWrapper>
                     <DropDown
                         width="135px"
                         onChange={(type) => {
-                            setType("questionType", type);
+                            setType('questionType', type);
                         }}
-                        option={["질문", "질문세트"]}
+                        option={['질문', '질문세트']}
                         value={filter.questionType}
                     />
-                    <SortBtn
-                        onClick={() => setType("sortType", !filter.sortType)}
-                        disabled={category === "랭킹"}
-                    >
-                        <SortImg
-                            src={sort}
-                            alt=""
-                            $sortType={filter.sortType}
-                            disabled={category === "랭킹"}
-                        />
-                        {filter.sortType ? "최신순" : "오래된순"}
+                    <SortBtn onClick={() => setType('sortType', !filter.sortType)} disabled={category === '랭킹'}>
+                        <SortImg src={sort} alt="" $sortType={filter.sortType} disabled={category === '랭킹'} />
+                        {filter.sortType ? '최신순' : '오래된순'}
                     </SortBtn>
                 </Stack>
                 {questionOrQuestionSetData()?.map((item, i) => {
-                    return (
-                        item !== undefined && (
-                            <QuestionBox
-                                key={i}
-                                data={item}
-                                refetch={saveQuestion}
-                            />
-                        )
-                    );
+                    return item !== undefined && <QuestionBox key={i} data={item} refetch={saveQuestion} />;
                 })}
-                {!questionRankingIsFetching &&
-                    !questionSetRankingIsFetching &&
-                    questionOrQuestionNextPage() && (
-                        <AddQuestion
-                            onClick={() => {
-                                saveQuestion(true);
-                            }}
-                        >
-                            더보기 +
-                        </AddQuestion>
-                    )}
+                {!questionRankingIsFetching && !questionSetRankingIsFetching && questionOrQuestionNextPage() && (
+                    <AddQuestion
+                        onClick={() => {
+                            saveQuestion(true);
+                        }}
+                    >
+                        더보기 +
+                    </AddQuestion>
+                )}
             </>
         </Stack>
     );
@@ -266,7 +221,7 @@ const SortImg = styled(Image)<{ $sortType: boolean; disabled: boolean }>`
         css`
             opacity: 0.3;
         `}
-    rotate: ${({ $sortType }) => ($sortType ? "180deg" : "0deg")};
+    rotate: ${({ $sortType }) => ($sortType ? '180deg' : '0deg')};
     transition: 0.5s;
     position: absolute;
     left: 14px;

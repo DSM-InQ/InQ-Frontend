@@ -1,32 +1,19 @@
-"use client";
-import { color } from "@/styles/theme";
-import up from "public/assets/svg/up.svg";
-import React from "react";
-import styled from "styled-components";
-import Image from "next/image";
-import { Text } from "@/components/designSystem/common/text";
-import {
-    useGetPopularQuestion,
-    useGetPopularQuestionSet,
-    useGetQuestionOfTheDay,
-} from "@/apis/question";
-import PopularQuestionBox from "@/components/designSystem/main/popularQuestionBox";
-import { Stack } from "@/components/designSystem/common/stack";
-import PopularQuestionSetBox from "@/components/designSystem/main/popularQuestionSetBox";
-import { categoryImg, categoryType } from "@/utils/Translation";
-import { getValueByKey } from "@/utils/useGetPropertyKey";
+'use client';
+import { color } from '@/styles/theme';
+import up from 'public/assets/svg/up.svg';
+import React from 'react';
+import styled from 'styled-components';
+import Image from 'next/image';
+import { Text } from '@/components/designSystem/common/text';
+import PopularQuestionBox from '@/components/designSystem/main/popularQuestionBox';
+import { Stack } from '@/components/designSystem/common/stack';
+import PopularQuestionSetBox from '@/components/designSystem/main/popularQuestionSetBox';
+import { categoryImg, categoryType } from '@/utils/Translation';
+import { getValueByKey } from '@/utils/useGetPropertyKey';
 
 /** @returns 랜덤 질문 풀어보기 Box components */
 export default function RandomQuestion() {
-    const categoryArray = [
-        "개발",
-        "마케팅",
-        "기획",
-        "상식",
-        "학습",
-        "경력",
-        "인성",
-    ];
+    const categoryArray = ['개발', '마케팅', '기획', '상식', '학습', '경력', '인성'];
     return (
         <Container>
             <Stack gap={19} direction="column" width="100%">
@@ -37,11 +24,7 @@ export default function RandomQuestion() {
                     {categoryArray.map((item, i) => {
                         return (
                             <Category key={i}>
-                                <Image
-                                    src={categoryImg[categoryType[item]]}
-                                    alt=""
-                                />
-                                #{item}
+                                <Image src={categoryImg[categoryType[item]]} alt="" />#{item}
                             </Category>
                         );
                     })}
@@ -49,7 +32,7 @@ export default function RandomQuestion() {
             </Stack>
             <StartBtn>
                 무작위 질문에 답변해보기
-                <Image src={up} alt="" style={{ marginTop: "-3px" }} />
+                <Image src={up} alt="" style={{ marginTop: '-3px' }} />
             </StartBtn>
         </Container>
     );

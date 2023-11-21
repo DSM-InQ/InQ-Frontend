@@ -1,4 +1,4 @@
-import { useGetTag } from "@/apis/question";
+import { useGetTags } from "@/apis/question";
 import { useCategoryState, useTagState } from "@/store/questionState";
 import { color } from "@/styles/theme";
 import { categoryType } from "@/utils/Translation";
@@ -24,7 +24,7 @@ export const Category = () => {
     ];
 
     /** 선택한 카테고리에 대한 태그 */
-    const { data, isFetching } = useGetTag(category);
+    const { data, isFetching } = useGetTags(category);
     return (
         <CategoryContainer>
             <CategoryBtn

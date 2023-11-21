@@ -1,17 +1,17 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import thumbs from "public/assets/svg/thumbs.svg";
-import star from "public/assets/svg/star.svg";
-import emptystar from "public/assets/svg/emptyStar.svg";
-import user from "public/assets/svg/user.svg";
-import Image from "next/image";
-import { color } from "@/styles/theme";
-import { Stack } from "../common/stack";
-import { questionListType } from "@/apis/question/type";
-import { getValueByKey } from "@/utils/useGetPropertyKey";
-import { categoryType } from "@/utils/Translation";
-import { useRouter } from "next/navigation";
-import { useQuestionFavorite, useQuestionSetFavorite } from "@/apis/question";
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import thumbs from 'public/assets/svg/thumbs.svg';
+import star from 'public/assets/svg/star.svg';
+import emptystar from 'public/assets/svg/emptyStar.svg';
+import user from 'public/assets/svg/user.svg';
+import Image from 'next/image';
+import { color } from '@/styles/theme';
+import { Stack } from '../common/stack';
+import { questionListType } from '@/apis/question/type';
+import { getValueByKey } from '@/utils/useGetPropertyKey';
+import { categoryType } from '@/utils/Translation';
+import { useRouter } from 'next/navigation';
+import { useQuestionFavorite, useSetFavorite } from '@/apis/question';
 
 interface propsType {
     data: questionListType;
@@ -28,30 +28,25 @@ export const QuestionSetBox = ({ data }: propsType) => {
     const [favorite, setFavorite] = useState<boolean>(data?.is_favorite);
 
     /** 질문세트 즐겨찾기 요청 api입니다. */
-    const { mutate: questionSetMutate, isLoading: questionSetIsLoading } =
-        useQuestionSetFavorite(data?.question_set_id, {
-            onSuccess: () => {
-                setFavorite((prev) => !prev);
-            },
-            onError: () => {
-                alert("즐겨찾기에 실패하였습니다.");
-            },
-        });
+    const { mutate: questionSetMutate, isLoading: questionSetIsLoading } = useSetFavorite(data?.question_set_id, {
+        onSuccess: () => {
+            setFavorite((prev) => !prev);
+        },
+        onError: () => {
+            alert('즐겨찾기에 실패하였습니다.');
+        },
+    });
     return (
         <Container
             onClick={() => {
-                !!data?.question_set_id &&
-                    router.push(`/${data?.question_set_id}`);
+                !!data?.question_set_id && router.push(`/${data?.question_set_id}`);
             }}
         >
             <Stack justify="space-between" align="center">
-                <CategoryText>
-                    {getValueByKey(categoryType, data?.category)}
-                </CategoryText>
+                <CategoryText>{getValueByKey(categoryType, data?.category)}</CategoryText>
                 <Stack gap={6} align="center">
                     <DateText>
-                        {data?.created_at.slice(0, 10)}{" "}
-                        {data?.created_at.slice(11, 16)}
+                        {data?.created_at.slice(0, 10)} {data?.created_at.slice(11, 16)}
                     </DateText>
                     {data?.like_count !== undefined && (
                         <>
@@ -77,14 +72,12 @@ export const QuestionSetBox = ({ data }: propsType) => {
                 </Stack>
             </Stack>
             <Stack gap={8} align="center">
-                <TitleText>
-                    {data?.question ? data?.question : data?.question_set_name}
-                </TitleText>
+                <TitleText>{data?.question ? data?.question : data?.question_set_name}</TitleText>
                 {data?.is_favorite && <Image src={star} alt="" />}
             </Stack>
             <Stack justify="space-between">
                 <UserText>{`${data?.username} · ${data?.job} ${data?.job_duration}년차`}</UserText>
-                <Stack gap={4} margin={"0 -4px 0 0"}>
+                <Stack gap={4} margin={'0 -4px 0 0'}>
                     {data?.tags.map((item, i) => (
                         <Tag key={i}># {item}</Tag>
                     ))}
@@ -156,7 +149,7 @@ const Tag = styled.div`
 const FavoriteImg = styled(Image)<{ $isLoading: boolean }>`
     width: 18px;
     height: 18px;
-    cursor: ${({ $isLoading }) => ($isLoading ? "not-allowed" : "pointer")};
+    cursor: ${({ $isLoading }) => ($isLoading ? 'not-allowed' : 'pointer')};
     z-index: 998;
     margin-left: 5px;
 `;

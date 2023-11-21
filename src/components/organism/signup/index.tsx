@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { Input } from "@/components/designSystem/common/input";
 import { Stack } from "@/components/designSystem/common/stack";
 import Button from "@/components/designSystem/common/button";
-import { Signup } from "@/apis/user";
+import { useSignup } from "@/apis/user";
 import closeEye from "public/assets/svg/closeEye.svg";
 import openEye from "public/assets/svg/openEye.svg";
 
@@ -29,7 +29,7 @@ export default function SignupCompo() {
         signForm;
 
     /** 회원가입 api 호출 */
-    const { mutate } = Signup(signForm);
+    const { mutate } = useSignup(signForm);
 
     return (
         <Container>

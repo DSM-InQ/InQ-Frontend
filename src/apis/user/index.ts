@@ -1,38 +1,93 @@
-import {
-    useInfiniteQuery,
-    useQuery,
-    useQueryClient,
-} from "@tanstack/react-query";
-import { instance } from "../axios";
-import {
-    checkResponse,
-    myInfoChangeDataTyp,
-    myInfoResponse,
-    myQuestionType,
-    signupDataType,
-    solvedQuestionResponse,
-} from "./type";
-import { useMutation } from "@tanstack/react-query";
-import { deleteCookie, setCookie } from "cookies-next";
-import { AxiosError } from "axios";
-import { useRouter } from "next/navigation";
-import { loginDataType } from "./type";
-import { questionSetResponse } from "../question/type";
+import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
+import { instance } from '../axios';
+import { checkResponse, myInfoResponse, myQuestionType, signupDataType, myAnswerResponse } from './type';
+import { useMutation } from '@tanstack/react-query';
+import { deleteCookie, setCookie } from 'cookies-next';
+import { AxiosError } from 'axios';
+import { useRouter } from 'next/navigation';
+import { loginDataType } from './type';
+import { setListResponse } from '../question/type';
 
-const path = "/user";
+const path = '/user';
 
 /**
- * 유저정보들을 받는 api입니다.
+ * 회원가입
+ * @param signupData 아이디, 이름, 비밀번호, 직업, 경력
+ * @returns useSignup API 호출 성공/실패 여부
+ */
+export const useSignup = (signupData: Omit<signupDataType, 'password2'>) => {
+    const router = useRouter();
+
+    return useMutation(async () => instance.post(`${path}`, signupData), {
+        onSuccess: () => {
+            router.push('/login');
+            alert('회원가입을 성공했습니다.');
+        },
+        onError: (err: AxiosError<AxiosError>) => {
+            if (err.response) {
+                switch (err.response.status) {
+                    case 400:
+                        alert('정보를 다시 확인해 주세요.');
+                        break;
+                    case 401:
+                        alert('개발자에게 문의해 주세요.');
+                        break;
+                    case 409:
+                        alert('이미 존재하는 계정입니다.');
+                        break;
+                }
+            } else alert('네트워크 연결 상태를 확인해 주세요.');
+        },
+    });
+};
+
+/**
+ * 로그인
+ * @param loginData 아이디, 비밀번호
+ * @param checkBoxValue 아이디 저장 여부
+ * @returns useLogin API 호출 성공/실패 여부
+ */
+export const useLogin = (loginData: loginDataType, checkBoxValue: boolean) => {
+    const router = useRouter();
+
+    return useMutation(async () => instance.post(`${path}/auth`, loginData), {
+        onSuccess: (res) => {
+            if (checkBoxValue) setCookie('account_id', loginData.account_id);
+            else deleteCookie('account_id');
+
+            const accessExpired = new Date(res.data.access_expires_at);
+            setCookie('access_token', res.data.access_token, {
+                expires: accessExpired,
+            });
+
+            router.push('/');
+            alert('로그인을 성공했습니다.');
+        },
+        onError: (err: AxiosError<AxiosError>) => {
+            if (err.response) {
+                switch (err.response.status) {
+                    case 400:
+                        alert('아이디와 비밀번호를 다시 확인해 주세요.');
+                        break;
+                    case 500:
+                        alert('개발자에게 문의해 주세요.');
+                        break;
+                }
+            } else alert('네트워크 연결 상태를 확인해 주세요.');
+        },
+    });
+};
+
+/**
+ * 유저정보 조회 API
  * @param
- * @returns 유저정보 조회 api 호출 성공/실패 여부
+ * @returns 유저정보 조회 data
  */
 export const useGetMyInfo = () => {
     return useQuery(
-        ["getMyInfo"],
+        ['getMyInfo'],
         async () => {
-            const { data } = await instance.get<myInfoResponse>(
-                `${path}/profile`
-            );
+            const { data } = await instance.get<myInfoResponse>(`${path}/profile`);
             return data;
         },
         {
@@ -42,13 +97,41 @@ export const useGetMyInfo = () => {
 };
 
 /**
- * 출석체크 정보를 받는 api입니다.
+ * 유저정보 수정
+ * @param myInfoChangeData 이름, 직업, 경력
+ * @returns useMyInfoChange API 호출 성공/실패 여부
+ */
+export const useMyInfoChange = (myInfoChangeData: Omit<signupDataType, 'account_id' | 'password' | 'password2'>) => {
+    const router = useRouter();
+
+    return useMutation(async () => instance.put(`${path}/profile`, myInfoChangeData), {
+        onSuccess: () => {
+            router.push('/myInfo');
+            alert('정보 수정을 성공했습니다.');
+        },
+        onError: (err: AxiosError<AxiosError>) => {
+            if (err.response) {
+                switch (err.response.status) {
+                    case 400:
+                        alert('정보를 다시 확인해 주세요.');
+                        break;
+                    case 401:
+                        alert('개발자에게 문의해 주세요.');
+                        break;
+                }
+            } else alert('네트워크 연결 상태를 확인해 주세요.');
+        },
+    });
+};
+
+/**
+ * 출석체크 조회 API
  * @param
- * @returns 출석체크 조회 api 호출 성공/실패 여부
+ * @returns 출석체크 조회 data
  */
 export const useGetCheck = () => {
     return useQuery(
-        ["getCheck"],
+        ['getCheck'],
         async () => {
             const { data } = await instance.get<checkResponse>(`${path}/check`);
             return data;
@@ -60,145 +143,67 @@ export const useGetCheck = () => {
 };
 
 /**
- *로그인
- * @param loginData 아이디 및 비밀번호
- * @param checkBoxValue 아이디 저장 여부
- * @returns login api 호출 성공/실패 여부
+ * 출석체크
+ * @param
+ * @returns useCheck API 호출 성공/실패 여부
  */
-export const Login = (loginData: loginDataType, checkBoxValue: boolean) => {
-    const router = useRouter();
-    return useMutation(async () => instance.post(`${path}/auth`, loginData), {
-        onSuccess: (res) => {
-            if (checkBoxValue) {
-                setCookie("account_id", loginData.account_id);
-            } else {
-                deleteCookie("account_id");
-            }
-            const accessExpired = new Date(res.data.access_expires_at);
-            setCookie("access_token", res.data.access_token, {
-                expires: accessExpired,
-            });
-            router.push("/");
-        },
-        onError: (err: AxiosError<AxiosError>) => {
-            if (err.response) {
-                switch (err.response.status) {
-                    case 404:
-                        alert("아이디와 비밀번호를 다시 확인해주세요.");
-                        break;
-                    case 500:
-                        alert("개발자에게 문의해주세요.");
-                        break;
-                }
-            } else {
-                alert("네트워크 연결을 확인해주세요.");
-            }
-        },
-    });
-};
+export const useCheck = () => {
+    const queryClient = useQueryClient();
 
-/**
- *회원가입
- * @param signupData 아이디, 이름, 비밀번호, 직업, 경력
- * @returns signup api 호출 성공/실패 여부
- */
-export const Signup = (signupData: Omit<signupDataType, "password2">) => {
-    const router = useRouter();
-
-    return useMutation(async () => instance.post(`${path}`, signupData), {
+    return useMutation(async () => instance.post(`${path}/check`), {
         onSuccess: () => {
-            router.push("/login");
+            queryClient.invalidateQueries(['getMyInfo']);
+            queryClient.invalidateQueries(['getCheck']);
+            alert('출석체크를 성공했습니다.');
         },
         onError: (err: AxiosError<AxiosError>) => {
             if (err.response) {
                 switch (err.response.status) {
-                    case 404:
-                        alert("정보를 다시 확인해 주세요.");
+                    case 400:
+                        alert('정보를 다시 확인해 주세요.');
+                        break;
+                    case 401:
+                        alert('개발자에게 문의해 주세요.');
                         break;
                     case 409:
-                        alert("이미 존재하는 계정입니다.");
+                        alert('출석체크를 이미 했습니다.');
                         break;
+                    case 429:
+                        alert('1분 뒤 다시 시도해 주세요.');
                 }
-            } else {
-                alert("네트워크 연결을 확인해 주세요.");
-            }
+            } else alert('네트워크 연결 상태를 확인해 주세요.');
         },
     });
 };
 
 /**
- *유저정보 수정
- * @param myInfoChangeData 이름, 직업, 경력
- * @returns myInfoChange api 호출 성공/실패 여부
+ * 답변 내역 조회 API
+ * @param
+ * @returns 답변 내역 조회 data
  */
-export const MyInfoChange = (myInfoChangeData: myInfoChangeDataTyp) => {
-    const router = useRouter();
-
-    return useMutation(
-        async () => instance.put(`${path}/profile`, myInfoChangeData),
+export const useGetMyAnswer = () => {
+    return useInfiniteQuery(
+        ['getMyAnswer'],
+        async ({ pageParam = 0 }) => {
+            const { data } = await instance.get<myAnswerResponse>(`${path}/me/questions?page=${pageParam}`);
+            return data;
+        },
         {
-            onSuccess: () => {
-                router.push("/myInfo");
-            },
-            onError: (err: AxiosError<AxiosError>) => {
-                if (err.response) {
-                    switch (err.response.status) {
-                        case 400:
-                            alert("정보를 다시 확인해 주세요.");
-                            break;
-                        case 401:
-                            alert("개발자에게 문의해 주세요.");
-                            break;
-                    }
-                } else {
-                    alert("네트워크 연결을 확인해 주세요.");
-                }
-            },
+            getNextPageParam: (_, a) => a.length,
         }
     );
 };
 
 /**
- * 출석체크
- * @param 없음
- * @returns checkDate api 호출 성공/실패 여부
- */
-export const CheckDate = () => {
-    const queryClient = useQueryClient();
-    return useMutation(async () => instance.post(`${path}/check`), {
-        onSuccess: () => {
-            queryClient.invalidateQueries(["getMyInfo"]);
-            queryClient.invalidateQueries(["getCheck"]);
-            alert("출석체크가 완료되었습니다!");
-        },
-        onError: (err: AxiosError<AxiosError>) => {
-            if (err.response) {
-                switch (err.response.status) {
-                    case 404:
-                        alert("정보를 다시 확인해 주세요.");
-                        break;
-                    case 409:
-                        alert("이미 존재하는 계정입니다.");
-                        break;
-                }
-            } else {
-                alert("네트워크 연결을 확인해 주세요.");
-            }
-        },
-    });
-};
-
-/**
- * 등록한 질문 조회 api입니다.
- * @returns 등록한 질문 조회 api 호출 성공/실패 여부
+ * 내가 등록한 질문 조회 API
+ * @param
+ * @returns 내가 등록한 질문 조회 data
  */
 export const useGetMyQuestion = () => {
     return useInfiniteQuery(
-        ["getMyQuestion"],
+        ['getMyQuestion'],
         async ({ pageParam = 0 }) => {
-            const { data } = await instance.get<myQuestionType[]>(
-                `${path}/question?page=${pageParam}`
-            );
+            const { data } = await instance.get<myQuestionType[]>(`${path}/question?page=${pageParam}`);
             return data;
         },
         {
@@ -208,35 +213,15 @@ export const useGetMyQuestion = () => {
 };
 
 /**
- * 등록한 질문 세트 조회 api입니다.
- * @returns 등록한 질문 세트 조회 api 호출 성공/실패 여부
+ * 내가 등록한 질문 세트 조회 API
+ * @param
+ * @returns 내가 등록한 질문 세트 조회 data
  */
-export const useGetMyQuestionSet = () => {
+export const useGetMySet = () => {
     return useInfiniteQuery(
-        ["getMyQuestionSet"],
+        ['getMySet'],
         async ({ pageParam = 0 }) => {
-            const { data } = await instance.get<questionSetResponse>(
-                `${path}/set?page=${pageParam}`
-            );
-            return data;
-        },
-        {
-            getNextPageParam: (_, a) => a.length,
-        }
-    );
-};
-
-/**
- * 답변한 질문/ 질문 세트 조회 api입니다.
- * @returns 답변한 질문/ 질문 세트 조회 api 호출 성공/실패 여부
- */
-export const useGetMyAnswerQuestion = () => {
-    return useInfiniteQuery(
-        ["getMyAnswerQuestion"],
-        async ({ pageParam = 0 }) => {
-            const { data } = await instance.get<solvedQuestionResponse>(
-                `${path}/me/questions?page=${pageParam}`
-            );
+            const { data } = await instance.get<setListResponse>(`${path}/set?page=${pageParam}`);
             return data;
         },
         {

@@ -4,7 +4,7 @@ import { color } from "@/styles/theme";
 import styled from "styled-components";
 import { Stack } from "@/components/designSystem/common/stack";
 import Image from "next/image";
-import { useGetMyAnswerQuestion } from "@/apis/user";
+import { useGetMyAnswer } from "@/apis/user";
 import sortImg from "public/assets/svg/sort.svg";
 import { Text } from "@/components/designSystem/common/text";
 import { MyAnswerBox } from "@/components/designSystem/myInfo/myAnswerBox";
@@ -15,7 +15,7 @@ export const MyAnswer = () => {
         data: myAnswerQuestion,
         fetchNextPage: myAnswerQuestionFetchNextPage,
         isFetching: myAnswerQuestionIsFetching,
-    } = useGetMyAnswerQuestion();
+    } = useGetMyAnswer();
     const [sortType, setSortType] = useState<boolean>(true);
     console.log(myAnswerQuestion);
     return (

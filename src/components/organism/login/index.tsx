@@ -1,26 +1,26 @@
-"use client";
-import { useForm } from "@/hooks/useForm";
-import { color } from "@/styles/theme";
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import closeEye from "public/assets/svg/closeEye.svg";
-import openEye from "public/assets/svg/openEye.svg";
-import { Login } from "@/apis/user";
-import { CheckBox, Input } from "@/components/designSystem/common/input";
-import Button from "@/components/designSystem/common/button";
-import { Stack } from "@/components/designSystem/common/stack";
-import { getCookie } from "cookies-next";
+'use client';
+import { useForm } from '@/hooks/useForm';
+import { color } from '@/styles/theme';
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import closeEye from 'public/assets/svg/closeEye.svg';
+import openEye from 'public/assets/svg/openEye.svg';
+import { useLogin } from '@/apis/user';
+import { CheckBox, Input } from '@/components/designSystem/common/input';
+import Button from '@/components/designSystem/common/button';
+import { Stack } from '@/components/designSystem/common/stack';
+import { getCookie } from 'cookies-next';
 
 /** @returns 로그인 page */
 export default function LoginCompo() {
     /** 체크박스 선택 구분을 위한 state */
-    const [checkBox, setCheckBox] = useState(!!getCookie("account_id"));
+    const [checkBox, setCheckBox] = useState(!!getCookie('account_id'));
     /** 비밀번호 input type 구분을 위한 state */
     const [isPassword, setIsPassword] = useState(true);
     /** 로그인 data */
     const { form: signForm, handleChange: signFormChange } = useForm({
-        account_id: getCookie("account_id") || "",
-        password: "",
+        account_id: getCookie('account_id') || '',
+        password: '',
     });
     /** 로그인 data를 구조분해할당 해놓은 부분 */
     const { account_id, password } = signForm;
@@ -37,34 +37,25 @@ export default function LoginCompo() {
     }, [account_id, password]);
 
     /** 로그인 api 호출 */
-    const { mutate } = Login(signForm, checkBox);
+    const { mutate } = useLogin(signForm, checkBox);
     return (
         <Container>
             <Wrapper>
                 <HeaderText>로그인</HeaderText>
                 <BigLine />
-                <Input
-                    label="아이디"
-                    name="account_id"
-                    value={account_id}
-                    onChange={signFormChange}
-                />
+                <Input label="아이디" name="account_id" value={account_id} onChange={signFormChange} />
                 <Input
                     label="비밀번호"
                     name="password"
                     value={password}
-                    type={isPassword ? "password" : "text"}
+                    type={isPassword ? 'password' : 'text'}
                     onChange={signFormChange}
                     margin="24px 0 78px 0"
                     icon={isPassword ? closeEye : openEye}
                     iconClick={() => setIsPassword((password) => !password)}
                     onForm={() => mutate()}
                 />
-                <CheckBox
-                    text="아이디 저장"
-                    onChange={() => setCheckBox((check) => !check)}
-                    checked={checkBox}
-                />
+                <CheckBox text="아이디 저장" onChange={() => setCheckBox((check) => !check)} checked={checkBox} />
                 <Button
                     onClick={() => {
                         mutate();
@@ -74,11 +65,6 @@ export default function LoginCompo() {
                 >
                     로그인
                 </Button>
-                <Stack width="100%" gap={32} align="center" justify="center">
-                    <OptionText>아이디 찾기</OptionText>
-                    <SmallLine />
-                    <OptionText>비밀번호 변경</OptionText>
-                </Stack>
             </Wrapper>
         </Container>
     );

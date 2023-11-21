@@ -7,7 +7,7 @@ import Image from "next/image";
 import sortImg from "public/assets/svg/sort.svg";
 import { Text } from "@/components/designSystem/common/text";
 import { QuestionBox } from "@/components/designSystem/questionFinder/questionBox";
-import { useGetFavoriteQuestionSet } from "@/apis/question";
+import { useGetFavoriteSet } from "@/apis/question";
 
 export const FavoriteQuestionSet = () => {
     const {
@@ -15,7 +15,7 @@ export const FavoriteQuestionSet = () => {
         fetchNextPage: myQuestionFetchNextPage,
         refetch: myQuestionRefetch,
         isFetching: myQuestionIsFetching,
-    } = useGetFavoriteQuestionSet();
+    } = useGetFavoriteSet();
     const [sortType, setSortType] = useState<boolean>(true);
 
     return (

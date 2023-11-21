@@ -8,7 +8,7 @@ import profile from "public/assets/svg/profile.svg";
 import { useGetCheck, useGetMyInfo } from "@/apis/user";
 import checkDate from "public/assets/svg/checkDate.svg";
 import { Text } from "@/components/designSystem/common/text";
-import { CheckDate } from "@/apis/user";
+import { useCheck } from "@/apis/user";
 
 export const Info = () => {
     const today = new Date().getDay();
@@ -41,7 +41,7 @@ export const Info = () => {
     });
 
     /** 출석체크 api 호출 */
-    const { mutate } = CheckDate();
+    const { mutate } = useCheck();
 
     return (
         <Stack

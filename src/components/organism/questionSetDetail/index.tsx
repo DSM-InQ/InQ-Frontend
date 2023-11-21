@@ -1,26 +1,22 @@
-"use client";
-import React from "react";
-import styled from "styled-components";
-import { color } from "@/styles/theme";
-import backImg from "public/assets/svg/backImg.svg";
-import thumbs from "public/assets/svg/thumbs.svg";
-import clickThumbs from "public/assets/svg/clickThumbs.svg";
-import user from "public/assets/svg/user.svg";
-import commentFormImg from "public/assets/svg/commentFormImg.svg";
-import up from "public/assets/svg/up.svg";
-import Image from "next/image";
-import { Stack } from "@/components/designSystem/common/stack";
-import { Text } from "@/components/designSystem/common/text";
-import {
-    useGetQuestionSetDetail,
-    useQuestionSetDislike,
-    useQuestionSetLike,
-} from "@/apis/question";
-import { useRouter } from "next/navigation";
-import { categoryImg, categoryType } from "@/utils/Translation";
-import { getValueByKey } from "@/utils/useGetPropertyKey";
-import { useQuestionSetWriteComment } from "@/apis/comment";
-import { useInput } from "@/hooks/useInput";
+'use client';
+import React from 'react';
+import styled from 'styled-components';
+import { color } from '@/styles/theme';
+import backImg from 'public/assets/svg/backImg.svg';
+import thumbs from 'public/assets/svg/thumbs.svg';
+import clickThumbs from 'public/assets/svg/clickThumbs.svg';
+import user from 'public/assets/svg/user.svg';
+import commentFormImg from 'public/assets/svg/commentFormImg.svg';
+import up from 'public/assets/svg/up.svg';
+import Image from 'next/image';
+import { Stack } from '@/components/designSystem/common/stack';
+import { Text } from '@/components/designSystem/common/text';
+import { useGetSetDetail, useSetDislike, useSetLike } from '@/apis/question';
+import { useRouter } from 'next/navigation';
+import { categoryImg, categoryType } from '@/utils/Translation';
+import { getValueByKey } from '@/utils/useGetPropertyKey';
+import { useSetWriteComment } from '@/apis/comment';
+import { useInput } from '@/hooks/useInput';
 
 interface propsType {
     id: string;
@@ -35,41 +31,37 @@ export default function QuestionSetDetail({ id }: propsType) {
     const router = useRouter();
 
     /** 키워드 input의 state */
-    const { form, setForm, handleChange } = useInput("");
+    const { form, setForm, handleChange } = useInput('');
 
     /** 질문세트 상세보기 data */
-    const { data, refetch } = useGetQuestionSetDetail(id);
+    const { data, refetch } = useGetSetDetail(id);
     /** 질문세트 댓글달기 api 호출입니다. */
-    const { mutate: writeCommentMutate } = useQuestionSetWriteComment(
-        id,
-        form,
-        {
-            onSuccess: () => {
-                alert("댓글이 성공적으로 작성되었습니다.");
-                setForm("");
-                refetch();
-            },
-            onError: () => {
-                alert("댓글 작성을 실패하였습니다.");
-            },
-        }
-    );
+    const { mutate: writeCommentMutate } = useSetWriteComment(id, form, {
+        onSuccess: () => {
+            alert('댓글이 성공적으로 작성되었습니다.');
+            setForm('');
+            refetch();
+        },
+        onError: () => {
+            alert('댓글 작성을 실패하였습니다.');
+        },
+    });
     /** 질문세트 싫어요 api 호출입니다. */
-    const { mutate: dislikeMutate } = useQuestionSetDislike(id, {
+    const { mutate: dislikeMutate } = useSetDislike(id, {
         onSuccess: () => {
             refetch();
         },
         onError: () => {
-            alert("싫어요를 실패하였습니다.");
+            alert('싫어요를 실패하였습니다.');
         },
     });
     /** 질문세트 좋아요 api 호출입니다. */
-    const { mutate: likeMutate } = useQuestionSetLike(id, {
+    const { mutate: likeMutate } = useSetLike(id, {
         onSuccess: () => {
             refetch();
         },
         onError: () => {
-            alert("좋아요를 실패하였습니다.");
+            alert('좋아요를 실패하였습니다.');
         },
     });
     return (
@@ -78,17 +70,13 @@ export default function QuestionSetDetail({ id }: propsType) {
                 <Image
                     src={backImg}
                     alt=""
-                    style={{ marginBottom: "80px", cursor: "pointer" }}
+                    style={{ marginBottom: '80px', cursor: 'pointer' }}
                     onClick={() => {
                         router.back();
                     }}
                 />
-                <Stack margin={"0 0 30px 0"}>
-                    <Stack
-                        width="100%"
-                        direction="column"
-                        align="space-between"
-                    >
+                <Stack margin={'0 0 30px 0'}>
+                    <Stack width="100%" direction="column" align="space-between">
                         <Text size={32} weight={700}>
                             {data?.name}
                         </Text>
@@ -100,9 +88,7 @@ export default function QuestionSetDetail({ id }: propsType) {
                     <Stack gap={16}>
                         <Stack
                             gap={6}
-                            cursor={
-                                data?.is_disliked ? "not-allowed" : "pointer"
-                            }
+                            cursor={data?.is_disliked ? 'not-allowed' : 'pointer'}
                             onClick={() => {
                                 !data?.is_disliked && likeMutate();
                             }}
@@ -110,13 +96,13 @@ export default function QuestionSetDetail({ id }: propsType) {
                             <Image
                                 src={data?.is_liked ? clickThumbs : thumbs}
                                 alt=""
-                                style={{ width: "20px", height: "20px" }}
+                                style={{ width: '20px', height: '20px' }}
                             />
                             <Text size={16}>{data?.like_count}</Text>
                         </Stack>
                         <Stack
                             gap={6}
-                            cursor={data?.is_liked ? "not-allowed" : "pointer"}
+                            cursor={data?.is_liked ? 'not-allowed' : 'pointer'}
                             onClick={() => {
                                 !data?.is_liked && dislikeMutate();
                             }}
@@ -125,9 +111,9 @@ export default function QuestionSetDetail({ id }: propsType) {
                                 src={data?.is_disliked ? clickThumbs : thumbs}
                                 alt=""
                                 style={{
-                                    rotate: "180deg",
-                                    width: "20px",
-                                    height: "20px",
+                                    rotate: '180deg',
+                                    width: '20px',
+                                    height: '20px',
                                 }}
                             />
                             <Text size={16}>{data?.dislike_count}</Text>
@@ -139,29 +125,18 @@ export default function QuestionSetDetail({ id }: propsType) {
                     </Stack>
                 </Stack>
                 <Text size={18}>{data?.description}</Text>
-                <Text color={color.gray6} margin={"40px 0 20px 0"}>
+                <Text color={color.gray6} margin={'40px 0 20px 0'}>
                     질문 구성
                 </Text>
                 <Stack justify="space-between" align="flex-end">
                     <Stack gap={50}>
                         {data?.category.map((item, i) => {
                             return (
-                                <Stack
-                                    key={i}
-                                    direction="column"
-                                    gap={14}
-                                    align="center"
-                                >
+                                <Stack key={i} direction="column" gap={14} align="center">
                                     <QuestionTypeImg>
-                                        <Image
-                                            src={categoryImg[item.category]}
-                                            alt=""
-                                        />
+                                        <Image src={categoryImg[item.category]} alt="" />
                                     </QuestionTypeImg>
-                                    <Text>{`${getValueByKey(
-                                        categoryType,
-                                        item.category
-                                    )} 질문 ${item.count}개`}</Text>
+                                    <Text>{`${getValueByKey(categoryType, item.category)} 질문 ${item.count}개`}</Text>
                                 </Stack>
                             );
                         })}
@@ -179,10 +154,8 @@ export default function QuestionSetDetail({ id }: propsType) {
                             placeholder="질문 세트를 모두 풀어본 뒤에 댓글을 작성할 수 있습니다."
                             value={form}
                             onChange={handleChange}
-                            onKeyPress={(
-                                e: React.KeyboardEvent<HTMLInputElement>
-                            ) => {
-                                if (e.key === "Enter") {
+                            onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                if (e.key === 'Enter') {
                                     writeCommentMutate();
                                 }
                             }}
@@ -191,9 +164,9 @@ export default function QuestionSetDetail({ id }: propsType) {
                             src={commentFormImg}
                             alt=""
                             style={{
-                                position: "absolute",
-                                right: "15px",
-                                top: "10px",
+                                position: 'absolute',
+                                right: '15px',
+                                top: '10px',
                             }}
                             onClick={() => writeCommentMutate()}
                         />
@@ -202,8 +175,7 @@ export default function QuestionSetDetail({ id }: propsType) {
                         return (
                             <CommentBox key={i}>
                                 <Text size={13}>
-                                    {item.username} · {item.job}{" "}
-                                    {item.job_duration}
+                                    {item.username} · {item.job} {item.job_duration}
                                     년차
                                 </Text>
                                 <Text size={16}>{item.comment}</Text>

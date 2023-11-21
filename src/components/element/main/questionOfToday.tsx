@@ -5,11 +5,11 @@ import React from "react";
 import styled from "styled-components";
 import Image from "next/image";
 import { Text } from "@/components/designSystem/common/text";
-import { useGetQuestionOfTheDay } from "@/apis/question";
+import { useGetQuestionOfToday } from "@/apis/question";
 
 /** @returns 오늘의 면접 질문 components */
-export default function QuestionOfTheDay() {
-    const { data } = useGetQuestionOfTheDay();
+export default function QuestionOfToday() {
+    const { data } = useGetQuestionOfToday();
     return (
         <Container>
             <Text size={18} color={color.gray6}>

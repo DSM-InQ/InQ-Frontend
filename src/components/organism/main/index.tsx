@@ -1,8 +1,7 @@
 "use client";
-import { useGetTag } from "@/apis/question";
 import MakeQuestion from "@/components/element/main/makeQuestionBox";
 import PopularQuestionAndQuestionSet from "@/components/element/main/popularQuestionAndQuestionSet";
-import QuestionOfTheDay from "@/components/element/main/questionOfTheDay";
+import QuestionOfToday from "@/components/element/main/questionOfToday";
 import RandomQuestion from "@/components/element/main/randomQuestion";
 import QuestionFinder from "@/components/organism/questionFinder";
 import { useCategoryState, useTagState } from "@/store/questionState";
@@ -23,7 +22,7 @@ export default function Main() {
                     <br />
                     InQ로 함께 공유하며 준비해요!
                 </MainImg>
-                <QuestionOfTheDay />
+                <QuestionOfToday />
                 <PopularQuestionAndQuestionSet />
                 <RandomQuestion />
                 <MakeQuestion />

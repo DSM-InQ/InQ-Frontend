@@ -5,10 +5,10 @@ import { Stack } from "../common/stack";
 import { getValueByKey } from "@/utils/useGetPropertyKey";
 import { categoryType } from "@/utils/Translation";
 import { Text } from "@/components/designSystem/common/text";
-import { solvedQuestionType } from "@/apis/user/type";
+import { solvedQuestionListType } from "@/apis/user/type";
 
 interface propsType {
-    data: solvedQuestionType;
+    data: solvedQuestionListType;
 }
 
 /**

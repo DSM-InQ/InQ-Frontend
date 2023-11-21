@@ -1,13 +1,13 @@
-"use client";
-import React from "react";
-import styled from "styled-components";
-import { color } from "@/styles/theme";
-import logo from "public/assets/svg/logo.svg";
-import personImg from "public/assets/svg/personImg.svg";
-import Image from "next/image";
-import { Stack } from "@/components/designSystem/common/stack";
-import { useRouter, usePathname } from "next/navigation";
-import { deleteCookie } from "cookies-next";
+'use client';
+import React from 'react';
+import styled from 'styled-components';
+import { color } from '@/styles/theme';
+import logo from 'public/assets/svg/logo.svg';
+import personImg from 'public/assets/svg/personImg.svg';
+import Image from 'next/image';
+import { Stack } from '@/components/designSystem/common/stack';
+import { useRouter, usePathname } from 'next/navigation';
+import { deleteCookie } from 'cookies-next';
 
 /** @returns Header components */
 export default function Header() {
@@ -19,27 +19,19 @@ export default function Header() {
         <>
             <Container>
                 <Stack align="center" width="434px" justify="space-between">
-                    <Image
-                        src={logo}
-                        alt=""
-                        onClick={() => router.push("/")}
-                        style={{ cursor: "pointer" }}
-                    />
+                    <Image src={logo} alt="" onClick={() => router.push('/')} style={{ cursor: 'pointer' }} />
                     <Text
-                        onClick={() => router.push("??")}
-                        $isSelect={pathname.includes("??")}
+                        onClick={() => router.push('/registerQuestion')}
+                        $isSelect={pathname.includes('registerQuestion')}
                     >
                         질문 등록
                     </Text>
-                    <Text
-                        onClick={() => router.push("??")}
-                        $isSelect={pathname.includes("??")}
-                    >
+                    <Text onClick={() => router.push('/registerSet')} $isSelect={pathname.includes('registerSet')}>
                         질문세트 등록
                     </Text>
                     <Text
-                        onClick={() => router.push("/searchQuestion")}
-                        $isSelect={pathname.includes("searchQuestion")}
+                        onClick={() => router.push('/searchQuestion')}
+                        $isSelect={pathname.includes('searchQuestion')}
                     >
                         질문 찾기
                     </Text>
@@ -47,8 +39,8 @@ export default function Header() {
                 <Stack align="center" width="134px" justify="space-between">
                     <Text
                         onClick={() => {
-                            deleteCookie("access_token");
-                            router.push("/login");
+                            deleteCookie('access_token');
+                            router.push('/login');
                         }}
                     >
                         로그아웃
@@ -56,8 +48,8 @@ export default function Header() {
                     <Image
                         src={personImg}
                         alt=""
-                        style={{ cursor: "pointer" }}
-                        onClick={() => router.push("/myInfo")}
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => router.push('/myInfo')}
                     />
                 </Stack>
             </Container>
