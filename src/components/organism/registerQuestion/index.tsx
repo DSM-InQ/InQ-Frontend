@@ -1,18 +1,19 @@
-"use client";
-import React, { useState } from "react";
-import { useForm } from "@/hooks/useForm";
-import styled from "styled-components";
-import { color } from "@/styles/theme";
-import { Input } from "@/components/designSystem/common/input";
-import { Textarea } from "@/components/designSystem/register/textarea";
-import { Stack } from "@/components/designSystem/common/stack";
-import { DropDown } from "@/components/designSystem/common/dropDown";
-import { useGetTag } from "@/apis/question";
-import Tag from "@/components/designSystem/register/tag";
-import { RegisterQuestion } from "@/apis/question";
-import Button from "@/components/designSystem/common/button";
+// ✅
 
-/** @returns 질문 등록 page */
+'use client';
+import React, { useState } from 'react';
+import { useForm } from '@/hooks/useForm';
+import styled from 'styled-components';
+import { color } from '@/styles/theme';
+import { Input } from '@/components/designSystem/common/input';
+import { Textarea } from '@/components/designSystem/register/textarea';
+import { Stack } from '@/components/designSystem/common/stack';
+import { DropDown } from '@/components/designSystem/common/dropDown';
+import Tag from '@/components/designSystem/register/tag';
+import { useRegisterQuestion } from '@/apis/question';
+import Button from '@/components/designSystem/common/button';
+
+/** @returns 질문 등록 component */
 export default function RegisterQuestionCompo() {
     /** 면접 예상 시간 */
     const [time, setTime] = useState(0);
@@ -22,23 +23,23 @@ export default function RegisterQuestionCompo() {
         setForm: setSignForm,
         handleChange: signFormChange,
     } = useForm({
-        category: "DEVELOPMENT",
-        question: "",
-        answer: "",
-        tag: "",
+        category: 'DEVELOPMENT',
+        question: '',
+        answer: '',
+        tag: '',
         tags: [],
     });
     /** 질문 등록 data를 구조분해할당 해놓은 부분 */
     const { category, question, answer, tag, tags } = signForm;
     /** 카테고리 data */
     const options = [
-        "DEVELOPMENT", // 개발
-        "MARKETING", // 마케팅
-        "PLANNING", // 기획
-        "COMMON_SENSE", // 상식
-        "LEARNING", // 학습
-        "CAREER", // 경력
-        "PERSONALITY", // 인성
+        'DEVELOPMENT', // 개발
+        'MARKETING', // 마케팅
+        'PLANNING', // 기획
+        'COMMON_SENSE', // 상식
+        'LEARNING', // 학습
+        'CAREER', // 경력
+        'PERSONALITY', // 인성
     ];
 
     /** 태그 추가하는 함수 */
@@ -64,11 +65,11 @@ export default function RegisterQuestionCompo() {
 
     /** 면접 예상 시간 계산하는 함수 */
     const TimeCalculation = () => {
-        setTime(~~(answer.replace(/ /gi, "").length / 6 / 60));
+        setTime(~~(answer.replace(/ /gi, '').length / 6 / 60));
     };
 
     /** 질문 등록 api 호출 */
-    const { mutate } = RegisterQuestion(signForm);
+    const { mutate } = useRegisterQuestion(signForm);
 
     return (
         <>
@@ -78,18 +79,21 @@ export default function RegisterQuestionCompo() {
 
                     <TopWrapper>
                         <Stack gap={30}>
-                            <DropDown
-                                option={options}
-                                value={category}
-                                onChange={(v) => {
-                                    setSignForm((prevForm: any) => ({
-                                        ...prevForm,
-                                        category: v,
-                                    }));
-                                }}
-                                width="200px"
-                                border={`1px solid ${color.gray5}`}
-                            />
+                            <Stack direction="column">
+                                <Label>카테고리</Label>
+                                <DropDown
+                                    option={options}
+                                    value={category}
+                                    onChange={(v) => {
+                                        setSignForm((prevForm: any) => ({
+                                            ...prevForm,
+                                            category: v,
+                                        }));
+                                    }}
+                                    width="200px"
+                                    border={`1px solid ${color.gray5}`}
+                                />
+                            </Stack>
 
                             <Stack width="500px">
                                 <Input
@@ -98,10 +102,7 @@ export default function RegisterQuestionCompo() {
                                     name="tag"
                                     value={tag}
                                     onKeyDown={(e) => {
-                                        if (
-                                            !e.nativeEvent.isComposing &&
-                                            e.key === "Enter"
-                                        ) {
+                                        if (!e.nativeEvent.isComposing && e.key === 'Enter') {
                                             AddTag();
                                         }
                                     }}
@@ -162,7 +163,7 @@ const Container = styled.div`
 `;
 
 const Wrapper = styled.div`
-    padding: 100px 0 100px 0;
+    padding: 50px 0 50px 0;
     width: 1000px;
     display: flex;
     flex-direction: column;
@@ -179,6 +180,13 @@ const TopWrapper = styled.div`
     display: inline-flex;
     flex-direction: column;
     gap: 20px;
+`;
+
+const Label = styled.div`
+    font-size: 14px;
+    font-weight: 400;
+    margin: 6px;
+    color: ${color.gray6};
 `;
 
 const BottomWrapper = styled.div`
