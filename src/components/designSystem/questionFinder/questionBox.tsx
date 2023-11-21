@@ -51,6 +51,7 @@ export const QuestionBox = ({ width = '790px', data, refetch }: propsType) => {
             style={{ width: width }}
             onClick={() => {
                 !!data?.question_set_id && router.push(`/${data?.question_set_id}`);
+                !!data?.question_id && router.push(`/solvingQuestion/${data.question_id}`);
             }}
         >
             <Stack justify="space-between" align="center">
