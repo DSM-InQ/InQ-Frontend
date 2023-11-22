@@ -20,21 +20,21 @@ interface propsType {
  * @returns 질문 풀기 page
  */
 export default function SolvingQuestionCompo({ questionId }: propsType) {
+    /** 질문 풀기 data */
+    const { form: signForm, handleChange: signFormChange } = useForm({
+        answer: '',
+    });
+    const { answer } = signForm;
+
     const router = useRouter();
+    /** 면접 예상시간 */
+    const [time, setTime] = useState(0);
     /** 질문 상세 보기 조회 data */
     const {
         data: questionDetailData,
         isLoading: questionDetailIsLoading,
         isError: questionDetailIsError,
     } = useGetQuestionDetail(questionId);
-
-    /** 면접 예상시간 */
-    const [time, setTime] = useState(0);
-    /** 질문 풀기 data */
-    const { form: signForm, handleChange: signFormChange } = useForm({
-        answer: '',
-    });
-    const { answer } = signForm;
 
     /** 면접 예상시간 */
     const TimeCalculation = () => {
