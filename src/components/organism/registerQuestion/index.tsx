@@ -1,5 +1,3 @@
-// ✅
-
 'use client';
 import React, { useState } from 'react';
 import { useForm } from '@/hooks/useForm';
@@ -15,8 +13,6 @@ import Button from '@/components/designSystem/common/button';
 
 /** @returns 질문 등록 component */
 export default function RegisterQuestionCompo() {
-    /** 면접 예상 시간 */
-    const [time, setTime] = useState(0);
     /** 질문 등록 data */
     const {
         form: signForm,
@@ -31,6 +27,8 @@ export default function RegisterQuestionCompo() {
     });
     /** 질문 등록 data를 구조분해할당 해놓은 부분 */
     const { category, question, answer, tag, tags } = signForm;
+    /** 면접 예상 시간 */
+    const [time, setTime] = useState<number>(0);
     /** 카테고리 data */
     const options = [
         'DEVELOPMENT', // 개발
@@ -50,7 +48,7 @@ export default function RegisterQuestionCompo() {
         }));
     };
 
-    /** 태그 추가하는 함수 */
+    /** 태그 제거하는 함수 */
     const RemoveTag = (i: number) => {
         setSignForm((prevForm: any) => {
             const updateTags = [...prevForm.tags];
@@ -68,7 +66,7 @@ export default function RegisterQuestionCompo() {
         setTime(~~(answer.replace(/ /gi, '').length / 6 / 60));
     };
 
-    /** 질문 등록 api 호출 */
+    /** 질문 등록 API 호출 */
     const { mutate } = useRegisterQuestion(signForm);
 
     return (

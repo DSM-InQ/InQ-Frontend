@@ -65,6 +65,7 @@ const TextareaStyle = styled.textarea<{
     width: 100%;
     height: ${({ height }) => height + 'px'};
     border: 1px solid ${color.gray5};
+    outline-color: ${color.primaryDefault};
     border-radius: 4px;
     font-size: 16px;
     font-family: 'Noto_Sans_KR';
