@@ -1,57 +1,67 @@
-import React from "react";
-import styled from "styled-components";
-import star from "public/assets/svg/star.svg";
-import emptystar from "public/assets/svg/emptyStar.svg";
-import Image from "next/image";
-import { color } from "@/styles/theme";
-import { Stack } from "../common/stack";
-import { myQuestionType } from "@/apis/user/type";
-import { getValueByKey } from "@/utils/useGetPropertyKey";
-import { categoryType } from "@/utils/Translation";
-import { Text } from "@/components/designSystem/common/text";
-import { useQuestionFavorite } from "@/apis/question";
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import star from 'public/assets/svg/star.svg';
+import emptystar from 'public/assets/svg/emptyStar.svg';
+import Image from 'next/image';
+import { color } from '@/styles/theme';
+import { Stack } from '../common/stack';
+import { myQuestionType } from '@/apis/user/type';
+import { getValueByKey } from '@/utils/useGetPropertyKey';
+import { categoryType } from '@/utils/Translation';
+import { Text } from '@/components/designSystem/common/text';
+import { useQuestionFavorite } from '@/apis/question';
 
 interface propsType {
     data: myQuestionType;
     refetch: () => void;
+    checkBox?: boolean;
+    onCheckBoxClick?: (questionId: number) => void;
 }
 
 /**
  * @param data 질문 / 질문세트 객체
  * @returns 질문 박스 components
  */
-export const QuestionBox = ({ data, refetch }: propsType) => {
+export const QuestionBox = ({ data, refetch, checkBox = false, onCheckBoxClick }: propsType) => {
+    const [check, setCheck] = useState(false);
     /** 질문 즐겨찾기 요청 api입니다. */
-    const { mutate: questionMutate, isLoading: questionIsLoading } =
-        useQuestionFavorite(data?.question_id, {
-            onSuccess: () => {
-                refetch();
-            },
-            onError: () => {
-                alert("즐겨찾기에 실패하였습니다.");
-            },
-        });
+    const { mutate: questionMutate, isLoading: questionIsLoading } = useQuestionFavorite(data?.question_id, {
+        onSuccess: () => {
+            refetch();
+        },
+        onError: () => {
+            alert('즐겨찾기에 실패하였습니다.');
+        },
+    });
 
     return (
         <Container>
             <Stack justify="space-between" align="center">
-                <CategoryText>
-                    {getValueByKey(categoryType, data?.category)}
-                </CategoryText>
+                <CategoryText>{getValueByKey(categoryType, data?.category)}</CategoryText>
                 <Stack gap={6} align="center">
                     <DateText>
-                        {data?.created_at.slice(0, 10)}{" "}
-                        {data?.created_at.slice(11, 16)}
+                        {data?.created_at.slice(0, 10)} {data?.created_at.slice(11, 16)}
                     </DateText>
                     <FavoriteImg
                         src={data?.is_favorite ? star : emptystar}
                         alt=""
                         $isLoading={questionIsLoading}
+                        display={checkBox}
                         onClick={(e: React.MouseEvent) => {
                             e.stopPropagation();
                             !questionIsLoading && questionMutate();
                         }}
                     ></FavoriteImg>
+
+                    <CheckBox
+                        display={checkBox}
+                        check={check}
+                        onClick={() => {
+                            if (!check) setCheck(true);
+                            else setCheck(false);
+                            onCheckBoxClick && onCheckBoxClick(data?.question_id);
+                        }}
+                    />
                 </Stack>
             </Stack>
             <Stack gap={8} align="center">
@@ -59,7 +69,7 @@ export const QuestionBox = ({ data, refetch }: propsType) => {
             </Stack>
             <Stack justify="space-between">
                 <UserText>{`${data?.username} · ${data?.job} ${data?.job_duration}년차`}</UserText>
-                <Stack gap={4} margin={"0 -4px 0 0"}>
+                <Stack gap={4} margin={'0 -4px 0 0'}>
                     {data?.tags.map((item, i) => (
                         <Tag key={i}># {item}</Tag>
                     ))}
@@ -69,9 +79,9 @@ export const QuestionBox = ({ data, refetch }: propsType) => {
                 size={18}
                 color={color.gray6}
                 style={{
-                    width: "100%",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
+                    width: '100%',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
                 }}
             >
                 {data?.exemplary_answer}
@@ -92,6 +102,10 @@ const Container = styled.div`
     background: ${color.gray1};
     padding: 0 38px;
     cursor: pointer;
+
+    &:hover {
+        background-color: ${color.gray2};
+    }
 `;
 
 const CategoryText = styled.div`
@@ -136,10 +150,25 @@ const Tag = styled.div`
     font-weight: 400;
 `;
 
-const FavoriteImg = styled(Image)<{ $isLoading: boolean }>`
+const FavoriteImg = styled(Image)<{
+    $isLoading: boolean;
+    display: boolean;
+}>`
     width: 18px;
     height: 18px;
-    cursor: ${({ $isLoading }) => ($isLoading ? "not-allowed" : "pointer")};
+    display: ${(props) => (props.display ? 'none' : 'block')};
+    cursor: ${({ $isLoading }) => ($isLoading ? 'not-allowed' : 'pointer')};
     z-index: 998;
     margin-left: 5px;
+`;
+
+const CheckBox = styled.button<{
+    display: boolean;
+    check: boolean;
+}>`
+    display: ${(props) => (props.display ? 'block' : 'none')};
+    width: 24px;
+    height: 24px;
+    background: ${(props) => (props.check ? color.primaryDefault : color.gray1)};
+    border: ${(props) => (props.check ? 'none' : `1px solid ${color.gray5}`)};
 `;
