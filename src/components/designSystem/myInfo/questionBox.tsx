@@ -40,7 +40,8 @@ export const QuestionBox = ({ data, refetch, checkBox = false, onCheckBoxClick }
                 <CategoryText>{getValueByKey(categoryType, data?.category)}</CategoryText>
                 <Stack gap={6} align="center">
                     <DateText>
-                        {data?.created_at.slice(0, 10)} {data?.created_at.slice(11, 16)}
+                        {data?.created_at && data.created_at.slice(0, 10)}{' '}
+                        {data?.created_at && data.created_at.slice(11, 16)}
                     </DateText>
                     <FavoriteImg
                         src={data?.is_favorite ? star : emptystar}

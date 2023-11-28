@@ -33,8 +33,6 @@ export default function RegisterSetCompo() {
     });
     const { question_set_name, description, category, question_id, tagValue, tag } = signForm;
 
-    const router = useRouter();
-    // const [sortType, setSortType] = useState(true);
     const options = [
         'DEVELOPMENT', //  개발
         'MARKETING', //    마케팅

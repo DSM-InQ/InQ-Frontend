@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
-import { useGetQuestionDetail } from '@/apis/question';
+import { useGetQuestionDetail, useSolvingQuestion } from '@/apis/question';
 import { useForm } from '@/hooks/useForm';
 import { getValueByKey } from '@/utils/useGetPropertyKey';
 import { categoryType } from '@/utils/Translation';
@@ -16,7 +16,7 @@ interface propsType {
 }
 
 /**
- * @param id 질문 id
+ * @param questionId 질문 id
  * @returns 질문 풀기 page
  */
 export default function SolvingQuestionCompo({ questionId }: propsType) {
@@ -40,6 +40,8 @@ export default function SolvingQuestionCompo({ questionId }: propsType) {
     const TimeCalculation = () => {
         setTime(~~(answer.replace(/ /gi, '').length / 6 / 60));
     };
+
+    const { mutate } = useSolvingQuestion(questionId, answer);
 
     return (
         <>
@@ -73,7 +75,7 @@ export default function SolvingQuestionCompo({ questionId }: propsType) {
                             <Button
                                 onClick={() => {
                                     if (answer === '') alert('답변을 작성해 주세요.');
-                                    else !!questionId && router.push(`/checkAnswer/${questionId}`);
+                                    else mutate();
                                 }}
                             >
                                 다음
