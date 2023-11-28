@@ -15,7 +15,7 @@ import { useGetSetDetail, useSetDislike, useSetLike } from '@/apis/question';
 import { useRouter } from 'next/navigation';
 import { categoryImg, categoryType } from '@/utils/Translation';
 import { getValueByKey } from '@/utils/useGetPropertyKey';
-import { useSetWriteComment } from '@/apis/comment';
+import { useQuestionSetWriteComment } from '@/apis/comment';
 import { useInput } from '@/hooks/useInput';
 
 interface propsType {
@@ -36,7 +36,7 @@ export default function QuestionSetDetail({ id }: propsType) {
     /** 질문세트 상세보기 data */
     const { data, refetch } = useGetSetDetail(id);
     /** 질문세트 댓글달기 api 호출입니다. */
-    const { mutate: writeCommentMutate } = useSetWriteComment(id, form, {
+    const { mutate: writeCommentMutate } = useQuestionSetWriteComment(id, form, {
         onSuccess: () => {
             alert('댓글이 성공적으로 작성되었습니다.');
             setForm('');
