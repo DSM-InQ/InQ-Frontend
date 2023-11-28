@@ -11,9 +11,11 @@ import PopularQuestionSetBox from '@/components/designSystem/main/popularQuestio
 import { categoryImg, categoryType } from '@/utils/Translation';
 import { getValueByKey } from '@/utils/useGetPropertyKey';
 import Button from '@/components/designSystem/common/button';
+import { useRouter } from 'next/navigation';
 
 /** @returns 질문세트 만들기 Box components */
 export default function MakeQuestion() {
+    const router = useRouter();
     return (
         <Container>
             <Stack gap={5} direction="column" width="100%" padding="43px 51px">
@@ -23,7 +25,7 @@ export default function MakeQuestion() {
                 <Text size={18} color={color.gray6}>
                     내가 면접관이라면 어떤 질문을 할까? 직접 구상하여 다른 사용자와 공유해요!
                 </Text>
-                <Btn>질문 만들기</Btn>
+                <Btn onClick={() => router.push('/registerQuestion')}>질문 만들기</Btn>
             </Stack>
         </Container>
     );

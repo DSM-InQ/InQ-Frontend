@@ -15,18 +15,18 @@ import { useGetSetDetail, useSetDislike, useSetLike } from '@/apis/question';
 import { useRouter } from 'next/navigation';
 import { categoryImg, categoryType } from '@/utils/Translation';
 import { getValueByKey } from '@/utils/useGetPropertyKey';
-import { useQuestionSetWriteComment } from '@/apis/comment';
+import { useSetWriteComment } from '@/apis/comment';
 import { useInput } from '@/hooks/useInput';
 
 interface propsType {
-    id: string;
+    setId: string;
 }
 
 /**
  * @param id 질문세트 id
  * @returns 질문세트 상세보기 page
  * */
-export default function QuestionSetDetail({ id }: propsType) {
+export default function QuestionSetDetail({ setId }: propsType) {
     /** 라우팅을 위한 router 생성 */
     const router = useRouter();
 
@@ -34,9 +34,9 @@ export default function QuestionSetDetail({ id }: propsType) {
     const { form, setForm, handleChange } = useInput('');
 
     /** 질문세트 상세보기 data */
-    const { data, refetch } = useGetSetDetail(id);
+    const { data, refetch } = useGetSetDetail(setId);
     /** 질문세트 댓글달기 api 호출입니다. */
-    const { mutate: writeCommentMutate } = useQuestionSetWriteComment(id, form, {
+    const { mutate: writeCommentMutate } = useSetWriteComment(setId, form, {
         onSuccess: () => {
             alert('댓글이 성공적으로 작성되었습니다.');
             setForm('');
@@ -47,7 +47,7 @@ export default function QuestionSetDetail({ id }: propsType) {
         },
     });
     /** 질문세트 싫어요 api 호출입니다. */
-    const { mutate: dislikeMutate } = useSetDislike(id, {
+    const { mutate: dislikeMutate } = useSetDislike(setId, {
         onSuccess: () => {
             refetch();
         },
@@ -56,7 +56,7 @@ export default function QuestionSetDetail({ id }: propsType) {
         },
     });
     /** 질문세트 좋아요 api 호출입니다. */
-    const { mutate: likeMutate } = useSetLike(id, {
+    const { mutate: likeMutate } = useSetLike(setId, {
         onSuccess: () => {
             refetch();
         },

@@ -1,18 +1,20 @@
 'use client';
 import { color } from '@/styles/theme';
 import up from 'public/assets/svg/up.svg';
-import React from 'react';
+import React, { use } from 'react';
 import styled from 'styled-components';
 import Image from 'next/image';
 import { Text } from '@/components/designSystem/common/text';
 import PopularQuestionBox from '@/components/designSystem/main/popularQuestionBox';
 import { Stack } from '@/components/designSystem/common/stack';
 import PopularQuestionSetBox from '@/components/designSystem/main/popularQuestionSetBox';
-import { categoryImg, categoryType } from '@/utils/Translation';
+import { categoryImg, categoryType, categoryTypeEnglish } from '@/utils/Translation';
 import { getValueByKey } from '@/utils/useGetPropertyKey';
+import { useRouter } from 'next/navigation';
 
 /** @returns 랜덤 질문 풀어보기 Box components */
 export default function RandomQuestion() {
+    const router = useRouter();
     const categoryArray = ['개발', '마케팅', '기획', '상식', '학습', '경력', '인성'];
     return (
         <Container>
@@ -23,14 +25,19 @@ export default function RandomQuestion() {
                 <Stack padding="0 20px" justify="space-between">
                     {categoryArray.map((item, i) => {
                         return (
-                            <Category key={i}>
+                            <Category
+                                key={i}
+                                onClick={() => {
+                                    router.push(`/${getValueByKey(categoryTypeEnglish, item)}`);
+                                }}
+                            >
                                 <Image src={categoryImg[categoryType[item]]} alt="" />#{item}
                             </Category>
                         );
                     })}
                 </Stack>
             </Stack>
-            <StartBtn>
+            <StartBtn onClick={() => router.push('/category')}>
                 무작위 질문에 답변해보기
                 <Image src={up} alt="" style={{ marginTop: '-3px' }} />
             </StartBtn>

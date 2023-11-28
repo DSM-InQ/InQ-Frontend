@@ -56,7 +56,7 @@ export const useSolvingQuestion = (questionId: string, answer: string) => {
 
     return useMutation(async () => instance.post(`${path}/${questionId}/answer`, { answer: answer }), {
         onSuccess: () => {
-            router.push('/');
+            router.push(`/set/0/checkAnswer/${questionId}`);
             alert('질문 풀기를 성공했습니다.');
         },
         onError: (err: AxiosError<AxiosError>) => {
@@ -360,7 +360,8 @@ export const useGetPopularSet = () => {
  */
 export const useGetRandomQuestion = (category?: string) => {
     return useQuery(['getRandomQuestion', category], async () => {
-        const queryString = category ? `?category=${category}` : '';
+        console.log('api' + category);
+        const queryString = category !== 'category' ? `?category=${category}` : '';
         const { data } = await instance.get<randomQuestionResponse>(`${path}/random${queryString}`);
         return data;
     });

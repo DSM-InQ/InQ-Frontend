@@ -1,20 +1,30 @@
-import developImg from "public/assets/svg/developImg.svg";
-import marketingImg from "public/assets/svg/marketingImg.svg";
-import planningImg from "public/assets/svg/planningImg.svg";
-import commonSenseImg from "public/assets/svg/commonSenseImg.svg";
-import learningImg from "public/assets/svg/learningImg.svg";
-import careerImg from "public/assets/svg/careerImg.svg";
-import personalityImg from "public/assets/svg/personalityImg.svg";
+import developImg from 'public/assets/svg/developImg.svg';
+import marketingImg from 'public/assets/svg/marketingImg.svg';
+import planningImg from 'public/assets/svg/planningImg.svg';
+import commonSenseImg from 'public/assets/svg/commonSenseImg.svg';
+import learningImg from 'public/assets/svg/learningImg.svg';
+import careerImg from 'public/assets/svg/careerImg.svg';
+import personalityImg from 'public/assets/svg/personalityImg.svg';
 
 /** 카테고리 type */
 export const categoryType: { [key: string]: string } = {
-    개발: "DEVELOPMENT",
-    마케팅: "MARKETING",
-    기획: "PLANNING",
-    상식: "COMMON_SENSE",
-    학습: "LEARNING",
-    경력: "CAREER",
-    인성: "PERSONALITY",
+    개발: 'DEVELOPMENT',
+    마케팅: 'MARKETING',
+    기획: 'PLANNING',
+    상식: 'COMMON_SENSE',
+    학습: 'LEARNING',
+    경력: 'CAREER',
+    인성: 'PERSONALITY',
+};
+
+export const categoryTypeEnglish: { [key: string]: string } = {
+    DEVELOPMENT: '개발',
+    MARKETING: '마케팅',
+    PLANNING: '기획',
+    COMMON_SENSE: '상식',
+    LEARNING: '학습',
+    CAREER: '경력',
+    PERSONALITY: '인성',
 };
 
 /** 카테고리별 사진 */
