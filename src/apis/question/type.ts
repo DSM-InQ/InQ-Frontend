@@ -7,11 +7,6 @@ export interface registerQuestionDataType {
     tags: string[];
 }
 
-/** 질문 풀기 POST */
-export interface solvingQuestionDataType {
-    answer: string;
-}
-
 /** 질문 상세 보기 조회 GET */
 export interface questionDetailResponse {
     question_id: number;

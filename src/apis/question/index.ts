@@ -10,7 +10,6 @@ import {
     setListResponse,
     registerQuestionDataType,
     registerSetDataType,
-    solvingQuestionDataType,
     solvingQuestionInSetDataType,
     randomQuestionResponse,
     theOtherAnswerResponse,
@@ -52,10 +51,10 @@ export const useRegisterQuestion = (registerQuestionData: Omit<registerQuestionD
  * @param solvingQuestionData 답변
  * @returns useSolvingQuestion API 호출 성공/실패 여부
  */
-export const useSolvingQuestion = (questionId: string, solvingQuestionData: solvingQuestionDataType) => {
+export const useSolvingQuestion = (questionId: string, answer: string) => {
     const router = useRouter();
 
-    return useMutation(async () => instance.post(`${path}/${questionId}/answer`, solvingQuestionData), {
+    return useMutation(async () => instance.post(`${path}/${questionId}/answer`, { answer: answer }), {
         onSuccess: () => {
             router.push('/');
             alert('질문 풀기를 성공했습니다.');
