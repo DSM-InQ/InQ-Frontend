@@ -25,8 +25,7 @@ export default function SolvingQuestionCompo({ questionId }: propsType) {
         answer: '',
     });
     const { answer } = signForm;
-
-    const router = useRouter();
+    
     /** 면접 예상시간 */
     const [time, setTime] = useState(0);
     /** 질문 상세 보기 조회 data */
