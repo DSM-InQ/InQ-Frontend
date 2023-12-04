@@ -58,6 +58,11 @@ export interface solvedQuestionListType {
 }
 
 /** 내가 등록한 질문 조회 GET */
+export interface myQuestionResponse {
+    has_next: boolean;
+    question_list: myQuestionType[];
+}
+
 export interface myQuestionType {
     question_id: number;
     author_id: number;

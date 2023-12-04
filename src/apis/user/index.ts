@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
 import { instance } from '../axios';
-import { checkResponse, myInfoResponse, myQuestionType, signupDataType, myAnswerResponse } from './type';
+import { checkResponse, myInfoResponse, signupDataType, myAnswerResponse, myQuestionResponse } from './type';
 import { useMutation } from '@tanstack/react-query';
 import { deleteCookie, setCookie } from 'cookies-next';
 import { AxiosError } from 'axios';
@@ -203,7 +203,7 @@ export const useGetMyQuestion = () => {
     return useInfiniteQuery(
         ['getMyQuestion'],
         async ({ pageParam = 0 }) => {
-            const { data } = await instance.get<myQuestionType[]>(`${path}/question?page=${pageParam}`);
+            const { data } = await instance.get<myQuestionResponse>(`${path}/question?page=${pageParam}`);
             return data;
         },
         {

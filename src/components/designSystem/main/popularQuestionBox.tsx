@@ -14,7 +14,17 @@ interface propsType {
 export default function PopularQuestionBox({ data }: propsType) {
     return (
         <Container>
-            <Text size={18} color={color.gray6}>
+            <Text
+                size={18}
+                color={color.gray6}
+                style={{
+                    width: "450px",
+                    overflow: "hidden",
+                    whiteSpace: "nowrap",
+                    textOverflow: "ellipsis",
+                    wordBreak: "break-all",
+                }}
+            >
                 {data?.question}
             </Text>
             <QuoteImg src={backImg} alt="" style={{ rotate: "180deg" }} />

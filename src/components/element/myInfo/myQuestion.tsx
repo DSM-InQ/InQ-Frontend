@@ -31,7 +31,7 @@ export const MyQuestion = () => {
                 </SortBtn>
             </Stack>
             {myQuestionList?.pages
-                .flatMap((prev) => prev)
+                .flatMap((prev) => prev.question_list)
                 .sort(
                     (a, b) =>
                         new Date(

@@ -19,7 +19,7 @@ interface propsType {
 export default function PopularQuestionSetBox({ data, index }: propsType) {
     return (
         <Container>
-            <Text size={20}>{data?.question_set_name}sadfasdfa</Text>
+            <Text size={20}>{data?.question_set_name}</Text>
             <Text size={13} margin="7px 0 0 0">
                 {`${data?.username} · ${data?.job} ${data?.job_duration}년차`}
             </Text>

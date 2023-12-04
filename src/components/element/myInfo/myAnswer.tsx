@@ -17,7 +17,6 @@ export const MyAnswer = () => {
         isFetching: myAnswerQuestionIsFetching,
     } = useGetMyAnswer();
     const [sortType, setSortType] = useState<boolean>(true);
-    console.log(myAnswerQuestion);
     return (
         <Stack
             display="inline-flex"
