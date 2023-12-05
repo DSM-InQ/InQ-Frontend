@@ -148,13 +148,13 @@ export default function RegisterSetCompo() {
                         <Title>내가 등록한 질문</Title>
 
                         {myQuestionData?.pages
-                            .flatMap((prev) => prev)
-                            .map((v, i) => {
+                            .flatMap((prev) => prev.question_list)
+                            .map((item, i) => {
                                 return (
-                                    v !== undefined && (
+                                    item !== undefined && (
                                         <QuestionBox
                                             key={i}
-                                            data={v}
+                                            data={item}
                                             refetch={myQuestionRefetch}
                                             checkBox={true}
                                             onCheckBoxClick={CheckBoxClick}
