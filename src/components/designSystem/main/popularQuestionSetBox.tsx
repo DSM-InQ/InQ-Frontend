@@ -1,24 +1,25 @@
-import { color } from "@/styles/theme";
-import popularQuestionSetImg1 from "public/assets/svg/popularQuestionSetImg1.svg";
-import popularQuestionSetImg2 from "public/assets/svg/popularQuestionSetImg2.svg";
-import thumbs from "public/assets/svg/thumbs.svg";
-import user from "public/assets/svg/user.svg";
-import React from "react";
-import styled from "styled-components";
-import Image from "next/image";
-import { Text } from "@/components/designSystem/common/text";
-import { questionListType } from "@/apis/question/type";
-import { Stack } from "../common/stack";
+import { color } from '@/styles/theme';
+import popularQuestionSetImg1 from 'public/assets/svg/popularQuestionSetImg1.svg';
+import popularQuestionSetImg2 from 'public/assets/svg/popularQuestionSetImg2.svg';
+import thumbs from 'public/assets/svg/thumbs.svg';
+import user from 'public/assets/svg/user.svg';
+import React from 'react';
+import styled from 'styled-components';
+import Image from 'next/image';
+import { Text } from '@/components/designSystem/common/text';
+import { questionListType } from '@/apis/question/type';
+import { Stack } from '../common/stack';
 
 interface propsType {
     data: questionListType;
     index: number;
+    onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 /** @returns 인기 질문 components */
-export default function PopularQuestionSetBox({ data, index }: propsType) {
+export default function PopularQuestionSetBox({ onClick, data, index }: propsType) {
     return (
-        <Container>
+        <Container onClick={onClick}>
             <Text size={20}>{data?.question_set_name}</Text>
             <Text size={13} margin="7px 0 0 0">
                 {`${data?.username} · ${data?.job} ${data?.job_duration}년차`}
@@ -33,19 +34,12 @@ export default function PopularQuestionSetBox({ data, index }: propsType) {
                     <Text>{data?.view_count}</Text>
                 </Stack>
             </Stack>
-            <QuoteImg
-                src={
-                    index === 0
-                        ? popularQuestionSetImg1
-                        : popularQuestionSetImg2
-                }
-                alt=""
-            />
+            <QuoteImg src={index === 0 ? popularQuestionSetImg1 : popularQuestionSetImg2} alt="" />
         </Container>
     );
 }
 
-const Container = styled.div`
+const Container = styled.button`
     position: relative;
     width: 542px;
     height: 151px;

@@ -83,6 +83,7 @@ export default function QuestionInSetCompo({ setId, questionId }: propsType) {
                                         setCount(count + 1);
                                         setIndex(index + 1);
                                     } else {
+                                        setIndex(index + 1);
                                         mutate();
                                         router.push(`/set/${setId}/checkAnswer/${set?.question_id_list[0]}`);
                                     }

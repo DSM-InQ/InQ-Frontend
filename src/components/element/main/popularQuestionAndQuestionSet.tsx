@@ -23,7 +23,15 @@ export default function PopularQuestionAndQuestionSet() {
                     </Text>
                     <Stack direction="column" gap={21}>
                         {popularQuestion?.question_list.slice(0, 4).map((item) => {
-                            return <PopularQuestionBox key={item.question_id} data={item} />;
+                            return (
+                                <PopularQuestionBox
+                                    key={item.question_id}
+                                    data={item}
+                                    onClick={() => {
+                                        router.push(`/solvingQuestion/${item.question_id}`);
+                                    }}
+                                />
+                            );
                         })}
                     </Stack>
                 </Stack>
@@ -33,7 +41,16 @@ export default function PopularQuestionAndQuestionSet() {
                     </Text>
                     <Stack direction="column" gap={20}>
                         {popularSet?.question_sets_list?.slice(0, 2).map((item, i) => {
-                            return <PopularQuestionSetBox index={i} key={item.question_set_id} data={item} />;
+                            return (
+                                <PopularQuestionSetBox
+                                    index={i}
+                                    key={item.question_set_id}
+                                    data={item}
+                                    onClick={() => {
+                                        router.push(`/set/${item.question_id}`);
+                                    }}
+                                />
+                            );
                         })}
                     </Stack>
                 </Stack>
