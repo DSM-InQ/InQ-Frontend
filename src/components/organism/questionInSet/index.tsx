@@ -45,21 +45,10 @@ export default function QuestionInSetCompo({ setId, questionId }: propsType) {
         setTime(~~(answer.replace(/ /gi, '').length / 6 / 60));
     };
 
-    const { mutate } = useSolvingQuestionInSet(
-        String(set?.question_id_list !== undefined && set?.question_id_list[index]),
-        answer
-    );
-
-    // const onClick = () => {
-    //     if (answer === '') alert('답변을 작성해 주세요.');
-    //     else if (num == 1) {
-    //         router.push(`/set/0/checkAnswer/${set?.question_id_list[0]}`);
-    //     } else {
-    //         router.push(`/set/${id}/questionInSet/${12}`);
-    //     }
-    //     // console.log('num');
-    //     setNum(num + 1);
-    // };
+    // const { mutate } = useSolvingQuestionInSet(
+    //     String(set?.question_id_list !== undefined && set?.question_id_list[index]),
+    //     answer
+    // );
 
     useEffect(() => {
         console.log(setId);

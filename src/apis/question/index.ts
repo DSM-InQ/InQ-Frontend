@@ -433,19 +433,10 @@ export const useGetFavoriteSet = () => {
  * @returns 다른 사람 답변 조회 data
  */
 export const useGetTheOtherAnswer = (questionId: string) => {
-    return useInfiniteQuery(
-        ['getTheOtherAnswer', questionId],
-        async ({ pageParam = 0 }) => {
-            const { data } = await instance.get<theOtherAnswerResponse>(
-                `${path}/${questionId}/answer?=page=${pageParam}`
-            );
-            return data;
-        },
-        {
-            enabled: false,
-            getNextPageParam: (_, a) => a.length,
-        }
-    );
+    return useQuery(['getTheOtherAnswer', questionId], async () => {
+        const { data } = await instance.get<theOtherAnswerResponse>(`${path}/${questionId}/answer?=page=0`);
+        return data;
+    });
 };
 
 /**

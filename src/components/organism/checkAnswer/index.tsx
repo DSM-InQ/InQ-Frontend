@@ -4,11 +4,15 @@ import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import { color } from '@/styles/theme';
 import { Stack } from '@/components/designSystem/common/stack';
-import { useGetQuestionDetail, useGetSetDetail } from '@/apis/question';
+import { useGetQuestionDetail, useGetSetDetail, useGetTheOtherAnswer, useSolvingSet } from '@/apis/question';
 import { getValueByKey } from '@/utils/useGetPropertyKey';
 import { categoryType } from '@/utils/Translation';
 import Button from '@/components/designSystem/common/button';
 import DifficultyEvaluation from '@/components/element/checkAnswer/difficultyEvaluation';
+import { useInput } from '@/hooks/useInput';
+import Image from 'next/image';
+import { useAnswerWriteComment } from '@/apis/comment';
+import commentFormImg from 'public/assets/svg/commentFormImg.svg';
 
 interface propsType {
     setId: string;
@@ -16,6 +20,7 @@ interface propsType {
 }
 
 export default function CheckAnswerCompo({ setId, questionId }: propsType) {
+    const [writeId, setWriteId] = useState(0);
     const [count, setCount] = useState(1);
     const router = useRouter();
 
@@ -25,6 +30,24 @@ export default function CheckAnswerCompo({ setId, questionId }: propsType) {
         isError: questionDetailIsError,
     } = useGetQuestionDetail(questionId);
     const { data: setDetailData, isLoading: setDetailIsLoading, isError: setDetailIsError } = useGetSetDetail(setId);
+
+    const { data: theOtherAnswerData, isLoading, isError, refetch } = useGetTheOtherAnswer(questionId);
+
+    const { form, setForm, handleChange } = useInput('');
+
+    const { mutate: writeCommentMutate } = useAnswerWriteComment(String(writeId), form, {
+        onSuccess: () => {
+            alert('댓글이 성공적으로 작성되었습니다.');
+            setForm('');
+            refetch();
+        },
+        onError: () => {
+            alert('댓글 작성을 실패하였습니다');
+            refetch();
+        },
+    });
+
+    const { mutate } = useSolvingSet(setId);
 
     return (
         <>
@@ -49,9 +72,7 @@ export default function CheckAnswerCompo({ setId, questionId }: propsType) {
                                             `/set/${setId}/checkAnswer/${setDetailData?.question_id_list[count]}`
                                         );
                                         setCount(count + 1);
-                                    } else {
-                                        alert('질문 세트 풀기를 성공했습니다.');
-                                    }
+                                    } else mutate();
                                 }}
                                 width="80px"
                             >
@@ -81,6 +102,58 @@ export default function CheckAnswerCompo({ setId, questionId }: propsType) {
                     )}
 
                     <DifficultyEvaluation questionId={questionId} />
+
+                    <Stack direction="column" gap={20}>
+                        {theOtherAnswerData?.answer_list.map((v: any, i) => (
+                            <CommentWrapper key={i}>
+                                <Stack justify="space-between">
+                                    <Text>{`${v?.username} · ${v?.job} ${v?.job_duration}년차`}</Text>
+
+                                    <Text>{v?.answer}</Text>
+
+                                    <Stack direction="column" gap={10}>
+                                        <Text color={color.gray6}>댓글</Text>
+
+                                        <Stack position="relative" width="100%">
+                                            <CommentInput
+                                                type="text"
+                                                name="commentText"
+                                                placeholder="댓글을 작성해 보세요!"
+                                                value={form}
+                                                onChange={handleChange}
+                                                onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                                    if (e.key === 'Enter') {
+                                                        setWriteId(v.id);
+                                                        writeCommentMutate();
+                                                    }
+                                                }}
+                                            />
+
+                                            <Image
+                                                src={commentFormImg}
+                                                alt=""
+                                                style={{
+                                                    position: 'absolute',
+                                                    right: '15px',
+                                                    top: '10px',
+                                                }}
+                                                onClick={() => {}}
+                                            />
+                                        </Stack>
+
+                                        <Stack direction="column" gap={10}>
+                                            {v.comments?.map((v: any, i: any) => (
+                                                <OtherCommentWrapper key={i}>
+                                                    <Comment>{`${v?.username} · ${v?.job} ${v?.job_duration}년차 `}</Comment>
+                                                    <Text>{`${v?.comment}`}</Text>
+                                                </OtherCommentWrapper>
+                                            ))}
+                                        </Stack>
+                                    </Stack>
+                                </Stack>
+                            </CommentWrapper>
+                        ))}
+                    </Stack>
                 </Wrapper>
             </Container>
         </>
