@@ -50,7 +50,7 @@ export const QuestionBox = ({ width = '790px', data, refetch }: propsType) => {
         <Container
             style={{ width: width }}
             onClick={() => {
-                !!data?.question_set_id && router.push(`/${data?.question_set_id}`);
+                !!data?.question_set_id && router.push(`/set/${data?.question_set_id}`);
                 !!data?.question_id && router.push(`/solvingQuestion/${data.question_id}`);
             }}
         >

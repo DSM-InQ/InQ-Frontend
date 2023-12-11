@@ -125,10 +125,10 @@ export const useRegisterSet = (registerSetData: Omit<registerSetDataType, 'tagVa
  * @param solvingQuestionInSetData 답변
  * @returns useSolvingQuestionInSet API 호출 성공/실패 여부
  */
-export const useSolvingQuestionInSet = (questionId: string, solvingQuestionInSetData: solvingQuestionInSetDataType) => {
+export const useSolvingQuestionInSet = (questionId: string, answer: string) => {
     const router = useRouter();
 
-    return useMutation(async () => instance.post(`${path}/${questionId}/set`, solvingQuestionInSetData), {
+    return useMutation(async () => instance.post(`${path}/${questionId}/set`, { answer: answer }), {
         onSuccess: () => {
             router.push('/수정하세요.');
         },

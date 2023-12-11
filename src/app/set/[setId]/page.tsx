@@ -1,12 +1,8 @@
-import React from "react";
-import Header from "@/components/organism/header";
-import QuestionSetDetail from "@/components/organism/questionSetDetail";
+import React from 'react';
+import Header from '@/components/organism/header';
+import QuestionSetDetail from '@/components/organism/questionSetDetail';
 
-export default function QuestionSetDetailPage({
-    params,
-}: {
-    params: { setId: string };
-}) {
+export default function QuestionSetDetailPage({ params }: { params: { setId: string } }) {
     return (
         <>
             <Header />

@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { color } from '@/styles/theme';
 import backImg from 'public/assets/svg/backImg.svg';
@@ -27,6 +27,7 @@ interface propsType {
  * @returns 질문세트 상세보기 page
  * */
 export default function QuestionSetDetail({ setId }: propsType) {
+    const [count, setCount] = useState(1);
     /** 라우팅을 위한 router 생성 */
     const router = useRouter();
 
@@ -141,7 +142,11 @@ export default function QuestionSetDetail({ setId }: propsType) {
                             );
                         })}
                     </Stack>
-                    <StartBtn>
+                    <StartBtn
+                        onClick={() => {
+                            router.push(`/set/${setId}/questionInSet/${data?.question_id_list[0]}`);
+                        }}
+                    >
                         풀어보기
                         <Image src={up} alt="" />
                     </StartBtn>
