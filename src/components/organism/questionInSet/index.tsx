@@ -50,10 +50,6 @@ export default function QuestionInSetCompo({ setId, questionId }: propsType) {
         answer
     );
 
-    useEffect(() => {
-        console.log(setId);
-    });
-
     return (
         <>
             <Container>
@@ -87,6 +83,7 @@ export default function QuestionInSetCompo({ setId, questionId }: propsType) {
                                         setCount(count + 1);
                                         setIndex(index + 1);
                                     } else {
+                                        mutate();
                                         router.push(`/set/${setId}/checkAnswer/${set?.question_id_list[0]}`);
                                     }
                                 }}

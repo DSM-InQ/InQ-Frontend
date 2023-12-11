@@ -434,7 +434,7 @@ export const useGetFavoriteSet = () => {
  */
 export const useGetTheOtherAnswer = (questionId: string) => {
     return useQuery(['getTheOtherAnswer', questionId], async () => {
-        const { data } = await instance.get<theOtherAnswerResponse>(`${path}/${questionId}/answer?=page=0`);
+        const { data } = await instance.get<theOtherAnswerResponse>(`${path}/${questionId}/answer?page=0`);
         return data;
     });
 };

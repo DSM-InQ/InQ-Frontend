@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import { color } from '@/styles/theme';
@@ -13,6 +13,7 @@ import { useInput } from '@/hooks/useInput';
 import Image from 'next/image';
 import { useAnswerWriteComment } from '@/apis/comment';
 import commentFormImg from 'public/assets/svg/commentFormImg.svg';
+import { Inconsolata } from 'next/font/google';
 
 interface propsType {
     setId: string;
@@ -67,12 +68,19 @@ export default function CheckAnswerCompo({ setId, questionId }: propsType) {
 
                             <Button
                                 onClick={() => {
-                                    if (count === 1) {
-                                        router.push(
-                                            `/set/${setId}/checkAnswer/${setDetailData?.question_id_list[count]}`
-                                        );
-                                        setCount(count + 1);
-                                    } else mutate();
+                                    if (Number(setId) === 0) {
+                                        alert('질문 풀기를 성공했습니다.');
+                                        router.push('/');
+                                    } else {
+                                        if (count === 1) {
+                                            router.push(
+                                                `/set/${setId}/checkAnswer/${setDetailData?.question_id_list[count]}`
+                                            );
+                                            setCount(count + 1);
+                                        } else {
+                                            mutate();
+                                        }
+                                    }
                                 }}
                                 width="80px"
                             >
@@ -106,49 +114,47 @@ export default function CheckAnswerCompo({ setId, questionId }: propsType) {
                     <Stack direction="column" gap={20}>
                         {theOtherAnswerData?.answer_list.map((v: any, i) => (
                             <CommentWrapper key={i}>
-                                <Stack justify="space-between">
-                                    <Text>{`${v?.username} · ${v?.job} ${v?.job_duration}년차`}</Text>
+                                <Text>{`${v?.username} · ${v?.job} ${v?.job_duration}년차`}</Text>
 
-                                    <Text>{v?.answer}</Text>
+                                <Text>{v?.answer}</Text>
+
+                                <Stack direction="column" gap={10}>
+                                    <Text color={color.gray6}>댓글</Text>
+
+                                    <Stack position="relative" width="100%">
+                                        <CommentInput
+                                            type="text"
+                                            name="commentText"
+                                            placeholder="댓글을 작성해 보세요!"
+                                            value={form}
+                                            onChange={handleChange}
+                                            onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                                if (e.key === 'Enter') {
+                                                    setWriteId(v.id);
+                                                    writeCommentMutate();
+                                                }
+                                            }}
+                                        />
+
+                                        <Image
+                                            src={commentFormImg}
+                                            alt=""
+                                            style={{
+                                                position: 'absolute',
+                                                right: '15px',
+                                                top: '10px',
+                                            }}
+                                            onClick={() => {}}
+                                        />
+                                    </Stack>
 
                                     <Stack direction="column" gap={10}>
-                                        <Text color={color.gray6}>댓글</Text>
-
-                                        <Stack position="relative" width="100%">
-                                            <CommentInput
-                                                type="text"
-                                                name="commentText"
-                                                placeholder="댓글을 작성해 보세요!"
-                                                value={form}
-                                                onChange={handleChange}
-                                                onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                                    if (e.key === 'Enter') {
-                                                        setWriteId(v.id);
-                                                        writeCommentMutate();
-                                                    }
-                                                }}
-                                            />
-
-                                            <Image
-                                                src={commentFormImg}
-                                                alt=""
-                                                style={{
-                                                    position: 'absolute',
-                                                    right: '15px',
-                                                    top: '10px',
-                                                }}
-                                                onClick={() => {}}
-                                            />
-                                        </Stack>
-
-                                        <Stack direction="column" gap={10}>
-                                            {v.comments?.map((v: any, i: any) => (
-                                                <OtherCommentWrapper key={i}>
-                                                    <Comment>{`${v?.username} · ${v?.job} ${v?.job_duration}년차 `}</Comment>
-                                                    <Text>{`${v?.comment}`}</Text>
-                                                </OtherCommentWrapper>
-                                            ))}
-                                        </Stack>
+                                        {v.comments?.map((v: any, i: any) => (
+                                            <OtherCommentWrapper key={i}>
+                                                <Comment>{`${v?.username} · ${v?.job} ${v?.job_duration}년차 `}</Comment>
+                                                <Text>{`${v?.comment}`}</Text>
+                                            </OtherCommentWrapper>
+                                        ))}
                                     </Stack>
                                 </Stack>
                             </CommentWrapper>
