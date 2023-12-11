@@ -130,7 +130,7 @@ export const useSolvingQuestionInSet = (questionId: string, answer: string) => {
 
     return useMutation(async () => instance.post(`${path}/${questionId}/set`, { answer: answer }), {
         onSuccess: () => {
-            router.push('/수정하세요.');
+            alert('질문 풀기를 성공했습니다.');
         },
         onError: (err: AxiosError<AxiosError>) => {
             if (err.response) {

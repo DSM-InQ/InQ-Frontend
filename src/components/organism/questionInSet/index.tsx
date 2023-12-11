@@ -45,10 +45,10 @@ export default function QuestionInSetCompo({ setId, questionId }: propsType) {
         setTime(~~(answer.replace(/ /gi, '').length / 6 / 60));
     };
 
-    // const { mutate } = useSolvingQuestionInSet(
-    //     String(set?.question_id_list !== undefined && set?.question_id_list[index]),
-    //     answer
-    // );
+    const { mutate } = useSolvingQuestionInSet(
+        String(set?.question_id_list !== undefined && set?.question_id_list[index]),
+        answer
+    );
 
     useEffect(() => {
         console.log(setId);
@@ -82,11 +82,11 @@ export default function QuestionInSetCompo({ setId, questionId }: propsType) {
                                 onClick={() => {
                                     if (answer === '') alert('답변을 작성해 주세요.');
                                     else if (count === 1) {
+                                        mutate();
                                         router.push(`/set/${setId}/questionInSet/${set?.question_id_list[count]}`);
                                         setCount(count + 1);
                                         setIndex(index + 1);
-                                    }
-                                    else {
+                                    } else {
                                         router.push(`/set/${setId}/checkAnswer/${set?.question_id_list[0]}`);
                                     }
                                 }}
